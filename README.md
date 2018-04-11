@@ -12,7 +12,7 @@ MSVC下编译为静态连接`/MT`,要求Visual Studio 2015
 
 要求cmake (2.6以上版本)
 ### windows
-windows CMD下执行`build_msvc.bat`自动编译32/64位静态库，编译器要求Visual Studio 2015.
+windows CMD下执行[`build_msvc.bat`](build_msvc.bat)自动编译32/64位静态库，编译器要求Visual Studio 2015.
 
 ### linux/gcc
 linux或gcc下的编译方式参照`build_msvc.bat`,下面以MinGW为例说明：

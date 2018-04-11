@@ -38,3 +38,4 @@
 *.log
 *.db
 *.ilk
+*.cache
