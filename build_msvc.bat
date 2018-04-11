@@ -1,5 +1,5 @@
 echo off 
-echo build detecl_cl SDK by VS2015
+echo build jpegwrapper by VS2015
 if not defined VS140COMNTOOLS (
 	echo vs2015 NOT FOUND.
 )
