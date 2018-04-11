@@ -58,7 +58,7 @@ CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=/MD /Zi /O2 /Ob1 /DNDEBUG
 CMAKE_C_STANDARD_LIBRARIES:STRING=kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
 
 //Flags used by the linker.
-CMAKE_EXE_LINKER_FLAGS:STRING=/machine:X86
+CMAKE_EXE_LINKER_FLAGS:STRING=/machine:x64
 
 //Flags used by the linker during debug builds.
 CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
@@ -76,10 +76,10 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 CMAKE_INSTALL_PREFIX:PATH=J:/jpegwrapper/release/jpegwrapper_x86_64
 
 //Path to a program.
-CMAKE_LINKER:FILEPATH=C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/link.exe
+CMAKE_LINKER:FILEPATH=C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/x86_amd64/link.exe
 
 //Flags used by the linker during the creation of modules.
-CMAKE_MODULE_LINKER_FLAGS:STRING=/machine:X86
+CMAKE_MODULE_LINKER_FLAGS:STRING=/machine:x64
 
 //Flags used by the linker during debug builds.
 CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
@@ -94,7 +94,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=/INCREMENTAL:NO
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=Project
+CMAKE_PROJECT_NAME:STATIC=jpegwrapper
 
 //RC compiler
 CMAKE_RC_COMPILER:FILEPATH=C:/Program Files (x86)/Windows Kits/8.1/bin/x86/rc.exe
@@ -117,7 +117,7 @@ CMAKE_RC_FLAGS_RELEASE:STRING=
 CMAKE_RC_FLAGS_RELWITHDEBINFO:STRING=
 
 //Flags used by the linker during the creation of dll's.
-CMAKE_SHARED_LINKER_FLAGS:STRING=/machine:X86
+CMAKE_SHARED_LINKER_FLAGS:STRING=/machine:x64
 
 //Flags used by the linker during debug builds.
 CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING=/debug /INCREMENTAL
@@ -139,7 +139,7 @@ CMAKE_SKIP_INSTALL_RPATH:BOOL=NO
 CMAKE_SKIP_RPATH:BOOL=NO
 
 //Flags used by the linker during the creation of static libraries.
-CMAKE_STATIC_LINKER_FLAGS:STRING=/machine:X86
+CMAKE_STATIC_LINKER_FLAGS:STRING=/machine:x64
 
 //Flags used by the linker during debug builds.
 CMAKE_STATIC_LINKER_FLAGS_DEBUG:STRING=
@@ -174,12 +174,6 @@ OPENJP2_LIBRARY_IMPORT:FILEPATH=J:/jpegwrapper/openjpeg-windows-vc-x86_64/lib/op
 //openjp2 static library
 OPENJP2_LIBRARY_STATIC:FILEPATH=J:/jpegwrapper/openjpeg-windows-vc-x86_64/lib/openjp2-static.lib
 
-//Value Computed by CMake
-Project_BINARY_DIR:STATIC=J:/jpegwrapper/project.vs2015
-
-//Value Computed by CMake
-Project_SOURCE_DIR:STATIC=J:/jpegwrapper
-
 //No help, variable specified on the command line.
 TARGET_PROCESSOR:UNINITIALIZED=x86_64
 
@@ -191,6 +185,12 @@ TURBOJPEG_LIBRARY_STATIC:FILEPATH=J:/jpegwrapper/libjpeg-turbo-windows-vc-x86_64
 
 //Dependencies for target
 jpegwrapper-static_LIB_DEPENDS:STATIC=
+
+//Value Computed by CMake
+jpegwrapper_BINARY_DIR:STATIC=J:/jpegwrapper/project.vs2015
+
+//Value Computed by CMake
+jpegwrapper_SOURCE_DIR:STATIC=J:/jpegwrapper
 
 
 ########################
@@ -250,7 +250,7 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
-CMAKE_GENERATOR:INTERNAL=Visual Studio 14 2015
+CMAKE_GENERATOR:INTERNAL=Visual Studio 14 2015 Win64
 //Name of generator platform.
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
