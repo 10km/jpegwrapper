@@ -1,0 +1,6 @@
+J:/jpegwrapper/project.vs2015/CMakeFiles/INSTALL.dir
+J:/jpegwrapper/project.vs2015/CMakeFiles/ALL_BUILD.dir
+J:/jpegwrapper/project.vs2015/CMakeFiles/ZERO_CHECK.dir
+J:/jpegwrapper/project.vs2015/jpegwrapper/CMakeFiles/jpegwrapper-static.dir
+J:/jpegwrapper/project.vs2015/jpegwrapper/CMakeFiles/testCImg.dir
+J:/jpegwrapper/project.vs2015/jpegwrapper/CMakeFiles/INSTALL.dir
