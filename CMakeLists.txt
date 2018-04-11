@@ -2,6 +2,8 @@
 #author:guyadong
 #created:2016/01/09
 cmake_minimum_required( VERSION 2.6 )
+project(jpegwrapper)
+
 #设置处理器
 if(TARGET_PROCESSOR)
 	set (CMAKE_SYSTEM_PROCESSOR ${TARGET_PROCESSOR})
