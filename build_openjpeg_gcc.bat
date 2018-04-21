@@ -20,14 +20,14 @@ set sh_folder=%~sdp0
 
 pushd %sh_folder%\openjpeg-version.2.1
 
-gcc --version |findstr "sjlj seh"
 rem 判断是否能编译64位程序
+gcc --version |findstr "sjlj seh"
 if errorlevel 1 (
 	echo unsupported x86_64 build
 	)else call:gcc_x86_64
-	
-gcc --version |findstr "sjlj dwarf"
+
 rem 判断是否能编译32位程序
+gcc --version |findstr "sjlj dwarf"
 if errorlevel 1 (
 	echo unsupported x86 build	
 	)else call:gcc_x86
