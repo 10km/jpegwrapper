@@ -39,3 +39,4 @@
 *.db
 *.ilk
 *.cache
+/project.vs2015
