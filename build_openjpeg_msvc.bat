@@ -8,6 +8,9 @@ echo vs2015 found.
 where cmake
 if errorlevel 1 (
 	echo cmake NOT FOUND.
+	echo download from http://cmake.org/ ,extract to disk 
+	echo add installation path to environment variable PATH
+	pause
 	exit -1
 )
 echo cmake found.
