@@ -3,10 +3,10 @@
 ############################################################################
 cmake_minimum_required( VERSION 2.6 )
 find_package(TurboJPEG REQUIRED)
-message(STATUS "TurboJPEG_LIBRARY=${TurboJPEG_LIBRARY}")
-message(STATUS "TurboJPEG_INCLUDE_DIR=${TurboJPEG_INCLUDE_DIR}")
-if(TurboJPEG_LIBRARY_STATIC)
-	set (TurboJPEG_LIBRARY ${TurboJPEG_LIBRARY_STATIC})
+message(STATUS "TURBOJPEG_LIBRARY=${TURBOJPEG_LIBRARY}")
+message(STATUS "TURBOJPEG_INCLUDE_DIR=${TURBOJPEG_INCLUDE_DIR}")
+if(TURBOJPEG_LIBRARY_STATIC)
+	set (TURBOJPEG_LIBRARY ${TURBOJPEG_LIBRARY_STATIC})
 endif()
 find_package(OpenJPEG CONFIG REQUIRED)
 message(STATUS "OPENJPEG_LIBRARIES=${OPENJPEG_LIBRARIES}")
@@ -15,7 +15,7 @@ message(STATUS "OPENJPEG_INCLUDE_DIRS=${OPENJPEG_INCLUDE_DIRS}")
 # 加入cimg openjpeg libjpeg 及公共代码支持
 include_directories(
 	${INCLUDE_CIMG} 
-	${TurboJPEG_INCLUDE_DIR}
+	${TURBOJPEG_INCLUDE_DIR}
 	${OPENJPEG_INCLUDE_DIRS}
 	${COMMONS_SOURCE_FOLDER} 
 	)
@@ -33,7 +33,7 @@ else()
 	##指定使用openjpeg静态库
 	add_definitions(-DOPJ_STATIC)
 endif()
-target_link_libraries(jpegwrapper-static ${TurboJPEG_LIBRARY} openjp2 )
+target_link_libraries(jpegwrapper-static ${TURBOJPEG_LIBRARY} openjp2 )
 target_link_libraries(testCImg jpegwrapper-static)
 
 install(TARGETS jpegwrapper-static
