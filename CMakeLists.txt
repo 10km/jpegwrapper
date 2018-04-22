@@ -29,7 +29,7 @@ message( STATUS "COMMONS_SOURCE_FOLDER= ${COMMONS_SOURCE_FOLDER}" )
 
 ##############根据编译条件定义libjpeg-turbo位置##############
 define_project_folder_name(libjpeg-turbo "${WITH_STATIC_CRT}")
-if( NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${libjpeg-turbo_folder}" )
+if( MSVC AND NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${libjpeg-turbo_folder}" )
 	message(FATAL_ERROR "not found fitted libjpeg-turbo sdk directory:${libjpeg-turbo_folder},please see./README.md") 
 endif()
 unset(LIBJPEG_TURBO_DIR CACHE)
@@ -38,7 +38,7 @@ message(STATUS "LIBJPEG_TURBO_DIR=${LIBJPEG_TURBO_DIR}" )
 list(APPEND CMAKE_PREFIX_PATH ${LIBJPEG_TURBO_DIR})
 ##############根据编译条件定义openjpeg位置##############
 define_project_folder_name(openjpeg "${WITH_STATIC_CRT}")
-if( NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${openjpeg_folder}" )
+if( MSVC AND NOT IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${openjpeg_folder}" )
 	message(FATAL_ERROR "not found fitted openjpeg sdk directory:${openjpeg_folder},please see./README.md") 
 endif()
 unset(OPENJPEG_DIR CACHE)
