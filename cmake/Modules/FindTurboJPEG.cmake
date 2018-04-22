@@ -25,7 +25,7 @@ find_path(TurboJPEG_INCLUDE_DIR turbojpeg.h)
 set(TurboJPEG_NAMES ${TurboJPEG_NAMES} turbojpeg libturbojpeg)
 find_library(TurboJPEG_LIBRARY NAMES ${TurboJPEG_NAMES} )
 
-# handle the QUIETLY and REQUIRED arguments and set TurboJPEG_FOUND to TRUE if
+# handle the QUIETLY and REQUIRED arguments and set TURBOJPEG_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(TurboJPEG DEFAULT_MSG TurboJPEG_LIBRARY TurboJPEG_INCLUDE_DIR)
