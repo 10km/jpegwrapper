@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <utility>
 #include <cstring>
-#include "openjpeg-2.1/openjpeg.h"
+#include "openjpeg.h"
 #include "raii.h"
 #include "jpeg_mem.h"
 using namespace std;
