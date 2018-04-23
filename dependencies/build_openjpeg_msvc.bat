@@ -17,7 +17,13 @@ echo cmake found.
 
 set sh_folder=%~sdp0
 
-pushd %sh_folder%\openjpeg-version.2.1
+set source_folder=openjpeg-version.2.1
+if not exist %source_folder% (
+	echo not found source folder: %source_folder%,please unzip %source_folder%.zip in current folder
+	pause
+	exit -1
+	)
+pushd %sh_folder%\%source_folder%
 
 :msvc_x86
 echo build x86 

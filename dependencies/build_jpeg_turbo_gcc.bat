@@ -25,8 +25,13 @@ if errorlevel 1 (
 )
 echo nasm found.
 set sh_folder=%~sdp0
-
-pushd %sh_folder%\libjpeg-turbo-1.5.90
+set source_folder=libjpeg-turbo-1.5.90
+if not exist %source_folder% (
+	echo not found source folder: %source_folder%,please unzip %source_folder%.zip in current folder
+	pause
+	exit -1
+	)
+pushd %sh_folder%\%source_folder%
 rem 判断是否能编译64位程序
 gcc --version |findstr "sjlj seh"
 if errorlevel 1 (

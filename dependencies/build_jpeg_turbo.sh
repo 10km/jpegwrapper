@@ -65,8 +65,16 @@ make install -j8
 popd
 #rm -fr build_gcc_x86_64
 }
-pushd $sh_folder/libjpeg-turbo-1.5.90
+pushd $sh_folder
+source_folder=libjpeg-turbo-1.5.90
+if [ ! -d $source_folder ]
+else 
+	unzip $source_folder.zip
+fi
+pushd $source_folder
+
 #build_gcc_x86
 build_gcc_x86_64
 
+popd
 popd

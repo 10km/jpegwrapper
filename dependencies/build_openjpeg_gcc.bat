@@ -18,7 +18,13 @@ echo cmake found.
 
 set sh_folder=%~sdp0
 
-pushd %sh_folder%\openjpeg-version.2.1
+set source_folder=openjpeg-version.2.1
+if not exist %source_folder% (
+	echo not found source folder: %source_folder%,please unzip %source_folder%.zip in current folder
+	pause
+	exit -1
+	)
+pushd %sh_folder%\%source_folder%
 
 rem 判断是否能编译64位程序
 gcc --version |findstr "sjlj seh"
