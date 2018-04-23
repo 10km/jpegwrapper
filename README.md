@@ -80,7 +80,7 @@ linux下编译脚本 [build.sh](build.sh),编译时可能需要根据自己linux
 
 所有依赖的第三方库在 [dependencies](dependencies)文件夹下
 
-### libjpeg-turbo version 1.4.2
+### libjpeg-turbo 
 
 download from http://sourceforge.net/projects/libjpeg-turbo/files/
 
@@ -105,7 +105,7 @@ VS2015 [build_jpeg_turbo_msvc.bat](dependencies/build_jpeg_turbo_msvc.bat)
 
 download from http://cimg.eu/
 
-### openjpeg version 2.1
+### openjpeg 
 
 download from http://www.openjpeg.org/
 
