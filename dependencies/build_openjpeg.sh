@@ -55,7 +55,7 @@ rm -fr build_gcc_x86_64
 pushd $sh_folder
 source_folder=openjpeg-version.2.1
 if [ ! -d $source_folder ]
-else 
+then
 	unzip $source_folder.zip
 fi
 pushd $source_folder

@@ -68,7 +68,7 @@ popd
 pushd $sh_folder
 source_folder=libjpeg-turbo-1.5.90
 if [ ! -d $source_folder ]
-else 
+then 
 	unzip $source_folder.zip
 fi
 pushd $source_folder
