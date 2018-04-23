@@ -33,7 +33,7 @@
 build/
 build.*/
 build_*/
-/release
+release/
 *.tlog
 *.pdb
 *.opendb
