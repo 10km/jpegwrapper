@@ -30,7 +30,9 @@
 *.exe
 *.out
 *.app
-/build
+build/
+build.*/
+build_*/
 /release
 *.tlog
 *.pdb
@@ -39,4 +41,4 @@
 *.db
 *.ilk
 *.cache
-/project.vs2015
+project.vs2015/

@@ -52,7 +52,17 @@ message(STATUS "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}" )
 ##############定义CImg位置##############
 set(INCLUDE_CIMG "${CMAKE_CURRENT_LIST_DIR}/CImg" CACHE INTERNAL "CImg include folder" )
 message(STATUS "INCLUDE_CIMG=${INCLUDE_CIMG}" )
-
+add_library(cimg INTERFACE)
+target_include_directories(cimg INTERFACE
+  $<BUILD_INTERFACE:${INCLUDE_CIMG}>
+  $<INSTALL_INTERFACE:include/cimg>
+)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+	target_link_libraries(cimg INTERFACE -lX11)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX)
+	target_link_libraries(cimg INTERFACE -lpthread)
+endif()
 ##############设置目标文件生成位置#####################
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")

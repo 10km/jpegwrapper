@@ -27,7 +27,7 @@ set(SOURCE_FILES
 	j2k_mem.cpp
 	)
 set(_target_static jpegwrapper-static)
-add_library( ${_target_static}  ${SOURCE_FILES})
+add_library( ${_target_static} STATIC ${SOURCE_FILES})
 if(NOT OPENJPEG_BUILD_SHARED_LIBS)
 	##指定使用openjpeg静态库
 #	add_definitions(-DOPJ_STATIC)
@@ -46,9 +46,8 @@ target_link_libraries(${_target_static} ${TURBOJPEG_LIBRARY} openjp2 )
 add_executable( testCImg EXCLUDE_FROM_ALL testCImg.cpp )
 target_include_directories (testCImg BEFORE 
 	PRIVATE ${COMMONS_SOURCE_FOLDER} 
-	PRIVATE ${INCLUDE_CIMG}
 	)
-target_link_libraries(testCImg ${_target_static} -lpthread -lX11)
+target_link_libraries(testCImg ${_target_static} cimg)
 
 install(TARGETS ${_target_static}
 			RUNTIME DESTINATION bin
