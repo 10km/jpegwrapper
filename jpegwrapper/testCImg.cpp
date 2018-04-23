@@ -34,6 +34,7 @@ int main()
 		CImgWrapper<unsigned char> image_jpg;
 		std::vector<uint8_t> jpeg_data=gdface::load_binary_file(input_jpg_file);
 		auto matrix=read_jpeg_header_mem(jpeg_data);
+
 		//auto matrix=read_jpeg_header_file(input_jpg_file);
 		cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<endl;
 		image_jpg.load_mem_jpeg(
@@ -46,6 +47,8 @@ int main()
 			//((j_decompress_ptr)cinfo)->scale_num=1;
 			//((j_decompress_ptr)cinfo)->scale_denom=2;
 		});
+		cimg_library::image_matrix_display(mat, "test display", true);
+
 		//auto mat=load_jpeg_gray_mem(jpeg_data);
 		/*save_jpeg_mem(mat,
 				[&](const uint8_t *img, unsigned long size) {

@@ -10,7 +10,6 @@
 #include <cstring>
 #include "jpeg_mem.h"
 #include "raii.h"
-#include "CImgWrapper.h"
 jpeg_custom_output_fun jpeg_custom_output_default=[](j_common_ptr){};
 /* 自定义jpeg图像压缩/解压缩过程中错误退出函数 */
 METHODDEF(void) jpeg_mem_error_exit (j_common_ptr cinfo) {
@@ -203,12 +202,12 @@ private:
 	mutable std::FILE * file;
 	jpeg_io_file( std::FILE *const file,const char *const filename):file(file),filename(filename){
 				if((nullptr==filename||0==strlen(filename))&&nullptr==file)
-					throw invalid_argument("the argument filename and file must not all be nullptr (empty)");
+					throw std::invalid_argument("the argument filename and file must not all be nullptr (empty)");
 				if(nullptr==this->file){
 					if(nullptr==filename||0==strlen(filename))
-						throw invalid_argument("the argument filename and file must not all be nullptr (empty)");
+						throw std::invalid_argument("the argument filename and file must not all be nullptr (empty)");
 					if(nullptr==(this->file=fopen(filename,COMPRESS?"wb":"rb"))){
-						throw invalid_argument(string("can't open file ").append(filename));
+						throw std::invalid_argument(std::string("can't open file ").append(filename));
 					}
 				}
 			}
@@ -388,26 +387,6 @@ image_matrix_param to_gray_image_matrix(const image_matrix_param&matrix){
     	throw jpeg_mem_exception("unsupported color space");
     }
     return gray;
-}
-cimg_library::CImgWrapper<uint8_t> toCImg(const image_matrix_param&img,bool original,bool is_shared) {
-	if(get_row_stride(img)==img.width||original){
-		return cimg_library::CImgWrapper<uint8_t>(img.pixels.data(), get_row_stride(img), img.height, 1, 1,is_shared);
-	}else{
-		// 去掉多余的对齐边数据
-		std::vector<uint8_t> tmp(img.width*img.height);
-		auto row_stride=get_row_stride(img);
-		auto src_ptr=img.pixels.data();
-		auto dst_ptr=tmp.data();
-		auto end_ptr=src_ptr+img.pixels.size();
-		for(;src_ptr<end_ptr;src_ptr+=row_stride,dst_ptr+=img.width){
-			memcpy(dst_ptr,src_ptr,img.width);
-		}
-		return cimg_library::CImgWrapper<uint8_t>(tmp.data(), img.width, img.height, 1, 1,false);
-	}
-}
-void image_matrix_display(const image_matrix_param&img,bool original,const std::string& title, const bool display_info, unsigned int *const XYZ,
-        const bool exit_on_anykey){
-	toCImg(img,original,true).display(title.empty()?nullptr:title.data(),display_info,XYZ,exit_on_anykey);
 }
 
 

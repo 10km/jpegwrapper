@@ -30,6 +30,22 @@ inline uint32_t get_row_stride(const image_matrix_param&matrix){
 	uint32_t m=(1U << (matrix.align&0x0f))-1;
 	return uint32_t((matrix.width+m)&(~m));
 }
+// 将image_matrix_param中按像素连续存储的图像数据改为按通道存储
+inline void fill_channels(const image_matrix_param&img,uint8_t *dst_ptr) {
+	auto row_stride = get_row_stride(img);
+	if (nullptr == dst_ptr) {
+		return;
+	}
+	for (uint8_t ch = 0; ch < img.channels; ++ch, dst_ptr += img.width*img.height) {
+		auto dst_offset = dst_ptr;
+		auto src_ptr = img.pixels.data();
+		for (unsigned int y = 0; y < img.height; ++y, src_ptr += row_stride*img.channels, dst_offset += img.width) {
+			for (unsigned int x = 0; x<img.width; ++x) {
+				dst_offset[x] = src_ptr[x*img.channels + ch];
+			}
+		}
+	}
+}
 /* 处理压缩解压缩后内存数据的回调函数 */
 using mem_finish_output_fun=std::function<void(const uint8_t*,unsigned long)>;
 /* 定制压缩解压缩参数 */
