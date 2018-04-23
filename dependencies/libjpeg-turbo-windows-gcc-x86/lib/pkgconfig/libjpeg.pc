@@ -1,0 +1,10 @@
+prefix=J:/jpegwrapper/dependencies/release/libjpeg-turbo-windows-gcc-x86
+exec_prefix=J:/jpegwrapper/dependencies/release/libjpeg-turbo-windows-gcc-x86
+libdir=J:/jpegwrapper/dependencies/release/libjpeg-turbo-windows-gcc-x86/lib
+includedir=J:/jpegwrapper/dependencies/release/libjpeg-turbo-windows-gcc-x86/include
+
+Name: libjpeg
+Description: A SIMD-accelerated JPEG codec that provides the libjpeg API
+Version: 1.5.90
+Libs: -L${libdir} -ljpeg
+Cflags: -I${includedir}
