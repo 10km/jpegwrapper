@@ -20,20 +20,7 @@ then
 fi
 echo nasm found.
 sh_folder=$(dirname $(readlink -f $0))
-pushd $sh_folder/libjpeg-turbo-1.5.90
-# 判断是否能编译64位程序
-#gcc --version |findstr "sjlj seh"
-#if errorlevel 1 (
-#	echo unsupported x86_64 build
-#	)else call:gcc_x86_64
-	
-# 判断是否能编译32位程序
-#gcc --version |findstr "sjlj dwarf"
-#if errorlevel 1 (
-#	echo unsupported x86 build	
-#	)else call:gcc_x86
 
-#goto :end
 build_gcc_x86(){
 echo "build x86 use gcc"
 if [ -d build_gcc_x86 ]
@@ -78,9 +65,8 @@ make install -j8
 popd
 #rm -fr build_gcc_x86_64
 }
-
+pushd $sh_folder/libjpeg-turbo-1.5.90
 #build_gcc_x86
 build_gcc_x86_64
 
-#:end
 popd

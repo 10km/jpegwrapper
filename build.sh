@@ -19,8 +19,8 @@ else
 fi
 pushd build
 
-cmake -G "Unix Makefiles" $GXX_PATH -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_linux_x86_64 ..
-make install
+cmake -G "Unix Makefiles" $GXX_PATH -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-linux-x86_64 ..
+#make install
 popd
 
 #rm -fr build
