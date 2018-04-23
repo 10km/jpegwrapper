@@ -8,12 +8,12 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 # Import target "openjp2" for configuration "RELEASE"
 set_property(TARGET openjp2 APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(openjp2 PROPERTIES
-  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/lib/openjp2.lib"
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/bin/openjp2.dll"
+  IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "C"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/openjp2.lib"
   )
 
 list(APPEND _IMPORT_CHECK_TARGETS openjp2 )
-list(APPEND _IMPORT_CHECK_FILES_FOR_openjp2 "${_IMPORT_PREFIX}/lib/openjp2.lib" "${_IMPORT_PREFIX}/bin/openjp2.dll" )
+list(APPEND _IMPORT_CHECK_FILES_FOR_openjp2 "${_IMPORT_PREFIX}/lib/openjp2.lib" )
 
 # Import target "opj_decompress" for configuration "RELEASE"
 set_property(TARGET opj_decompress APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)

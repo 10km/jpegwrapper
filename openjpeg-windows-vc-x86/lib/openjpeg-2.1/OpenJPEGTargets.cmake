@@ -44,7 +44,7 @@ get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
 get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
 
 # Create imported target openjp2
-add_library(openjp2 SHARED IMPORTED)
+add_library(openjp2 STATIC IMPORTED)
 
 # Create imported target opj_decompress
 add_executable(opj_decompress IMPORTED)

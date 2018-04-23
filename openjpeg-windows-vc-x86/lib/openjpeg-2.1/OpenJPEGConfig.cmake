@@ -17,7 +17,7 @@ set(OPENJPEG_LIBRARIES "openjp2")
 set(OPENJPEG_CMAKE_DIR "lib/openjpeg-2.1")
 
 # The configuration options.
-set(OPENJPEG_BUILD_SHARED_LIBS "ON")
+set(OPENJPEG_BUILD_SHARED_LIBS "OFF")
 
 # The "use" file.
 set(OPENJPEG_USE_FILE "")
