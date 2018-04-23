@@ -59,7 +59,7 @@ linux下编译脚本 [build.sh](build.sh),编译时可能需要根据自己linux
 
 ## Visual Studio 2015
 
-如果你不会使用cmake，项目中也提供了msvc project,在windows下可以用Visual Studio 2015 打开工程文件 [jpegwrapper.sln](project.vs2015/jpegwrapper.sln)
+执行 [make_msvc_project.bat](make_msvc_project.bat)可以生成Visual Studio 2015工程
 
 ## 代码结构
 
