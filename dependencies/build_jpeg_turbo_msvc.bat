@@ -25,7 +25,7 @@ if errorlevel 1 (
 echo nasm found.
 set sh_folder=%~sdp0
 
-pushd %sh_folder%\libjpeg-turbo-1.4.2
+pushd %sh_folder%\libjpeg-turbo-1.5.90
 
 :msvc_x86
 echo build x86 
@@ -37,15 +37,13 @@ call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86-mt ^
-	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\cmake\compiler_flag_overrides.cmake ..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86-mt ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
 	-DWITH_CRT_DLL=TRUE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86 ^
-	..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86 ..
 nmake clean install
 cd ..
 
@@ -59,8 +57,7 @@ call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86_64-mt ^
-	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\cmake\compiler_flag_overrides.cmake ..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/libjpeg-turbo-windows-vc-x86_64-mt ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^

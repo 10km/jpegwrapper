@@ -30,7 +30,7 @@ cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
-	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\cmake\compiler_flag_overrides.cmake ..
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
@@ -53,7 +53,7 @@ cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86_64-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
-	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\cmake\compiler_flag_overrides.cmake ..
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
