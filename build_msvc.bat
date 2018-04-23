@@ -16,7 +16,7 @@ if exist build rmdir build /s/q
 mkdir build
 cd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DTARGET_PROCESSOR=x86 -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_x86 ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DTARGET_PROCESSOR=x86 -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86 ..
 nmake install
 cd ..
 
@@ -26,7 +26,7 @@ if exist build rmdir build /s/q
 mkdir build
 cd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DTARGET_PROCESSOR=x86_64 -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_x86_64 ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DTARGET_PROCESSOR=x86_64 -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86_64 ..
 nmake install
 cd ..
 
