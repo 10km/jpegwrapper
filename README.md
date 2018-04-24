@@ -58,6 +58,10 @@ linux下的命令行编译：
 	# 编译测试代码，默认情况下make不编译测试代码
 	make testCImg
 
+linux下编译testCImg 需要libX11支持，如果没有，请安装,例如(CentOS)：
+
+	sudo yum install -y libX11-devel
+
 linux下编译脚本 [build.sh](build.sh),编译时可能需要根据自己linux系统的实际情况修改脚本。
 
 生成的静态库在release文件夹下

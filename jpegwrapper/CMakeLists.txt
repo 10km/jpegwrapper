@@ -14,7 +14,7 @@ message(STATUS "OPENJPEG_BUILD_SHARED_LIBS=${OPENJPEG_BUILD_SHARED_LIBS}")
 message(STATUS "OPENJPEG_INCLUDE_DIRS=${OPENJPEG_INCLUDE_DIRS}")
 
 # 是否编译测试程序选项
-option(BUILD_TEST "build test program" TRUE)
+option(AUTO_BUILD_TEST "build test program" OFF)
 
 ##### define static library ######
 set(SOURCE_FILES
@@ -50,9 +50,10 @@ target_link_libraries(${_target_static}
 	PUBLIC openjp2 )
 
 ##### define testCImg #######
-if(BUILD_TEST)
 add_executable( testCImg testCImg.cpp )
-
+if(NOT AUTO_BUILD_TEST)
+	set_target_properties(testCImg PROPERTIES EXCLUDE_FROM_ALL TRUE)
+endif()
 target_link_libraries(testCImg common_source ${_target_static} cimg)
 target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
 
@@ -63,13 +64,12 @@ if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
 	unset(_current_folder)
 endif()
 
-endif(BUILD_TEST)
 ################安装脚本#################
 install(TARGETS ${_target_static}
 			RUNTIME DESTINATION bin
 		  LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib/static)
-if(BUILD_TEST)
+if(AUTO_BUILD_TEST)
 	install(TARGETS testCImg RUNTIME DESTINATION bin)
 	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION bin)
 endif()
