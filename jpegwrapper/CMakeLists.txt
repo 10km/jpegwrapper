@@ -20,7 +20,7 @@ set(SOURCE_FILES
 	)
 # 用于外部调用的公共头文件
 set (_PUBLIC_HEADERS
-    ${DEPENDENT_SOURCE_DIR}/CImg.h
+    ${INCLUDE_CIMG}/CImg.h
     ${DEPENDENT_SOURCE_DIR}/raii.h
     ${DEPENDENT_SOURCE_DIR}/assert_macros.h    
     )
@@ -37,18 +37,18 @@ if(NOT OPENJPEG_BUILD_SHARED_LIBS)
 		)
 endif()
 target_include_directories (${_target_static} 
-	PRIVATE ${DEPENDENT_SOURCE_DIR}
 	PUBLIC ${TURBOJPEG_INCLUDE_DIR}
 	PUBLIC ${OPENJPEG_INCLUDE_DIRS}
 	)
 
-target_link_libraries(${_target_static} ${TURBOJPEG_LIBRARY} openjp2 )
+target_link_libraries(${_target_static} 
+	PRIVATE common_source 
+	PUBLIC ${TURBOJPEG_LIBRARY} 
+	PUBLIC openjp2 )
 ##### define testCImg #######
 add_executable( testCImg testCImg.cpp )
-target_include_directories (testCImg  
-	PRIVATE ${DEPENDENT_SOURCE_DIR} 
-	)
-target_link_libraries(testCImg ${_target_static} cimg)
+
+target_link_libraries(testCImg common_source ${_target_static} cimg)
 target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
 install(TARGETS ${_target_static} testCImg
 			RUNTIME DESTINATION bin
