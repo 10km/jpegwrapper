@@ -34,14 +34,14 @@ echo make MSVC x86 environment ...
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86-mt ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86 ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
 nmake clean install
@@ -57,14 +57,14 @@ call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86_64-mt ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86_64-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-vc-x86_64 ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86_64 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
 nmake clean install

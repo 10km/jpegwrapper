@@ -49,7 +49,7 @@ rem gcc SJLJ or DWARF distribution required
 cmake -G "MinGW Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
 	-DCMAKE_C_FLAGS=-m32 ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-gcc-x86 ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-gcc-x86 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
 make install -j8
@@ -67,7 +67,7 @@ rem gcc SJLJ or SEH distribution required
 cmake -G "MinGW Makefiles" ^
 	-DCMAKE_BUILD_TYPE=RELEASE ^
 	-DCMAKE_C_FLAGS=-m64 ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/release/openjpeg-windows-gcc-x86_64 ^
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-gcc-x86_64 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
 make install -j8
