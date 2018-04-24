@@ -13,6 +13,9 @@ message(STATUS "OPENJPEG_LIBRARIES=${OPENJPEG_LIBRARIES}")
 message(STATUS "OPENJPEG_BUILD_SHARED_LIBS=${OPENJPEG_BUILD_SHARED_LIBS}")
 message(STATUS "OPENJPEG_INCLUDE_DIRS=${OPENJPEG_INCLUDE_DIRS}")
 
+# 是否编译测试程序选项
+option(BUILD_TEST "build test program" TRUE)
+
 ##### define static library ######
 set(SOURCE_FILES
 	jpeg_mem.cpp 
@@ -45,7 +48,9 @@ target_link_libraries(${_target_static}
 	PRIVATE common_source 
 	PUBLIC ${TURBOJPEG_LIBRARY} 
 	PUBLIC openjp2 )
+
 ##### define testCImg #######
+if(BUILD_TEST)
 add_executable( testCImg testCImg.cpp )
 
 target_link_libraries(testCImg common_source ${_target_static} cimg)
@@ -58,13 +63,19 @@ if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR})
 	unset(_current_folder)
 endif()
 
-install(TARGETS ${_target_static} testCImg
+endif(BUILD_TEST)
+################安装脚本#################
+install(TARGETS ${_target_static}
 			RUNTIME DESTINATION bin
 		  LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib/static)
-install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION bin)
+if(BUILD_TEST)
+	install(TARGETS testCImg RUNTIME DESTINATION bin)
+	install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION bin)
+endif()
 file(GLOB wrapper_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install(FILES ${wrapper_headers} DESTINATION include)
 install(FILES ${_PUBLIC_HEADERS} DESTINATION include)
 
 unset(_target_static)
+unset(_PUBLIC_HEADERS)
