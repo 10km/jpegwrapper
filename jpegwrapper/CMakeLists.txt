@@ -50,6 +50,14 @@ add_executable( testCImg testCImg.cpp )
 
 target_link_libraries(testCImg common_source ${_target_static} cimg)
 target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
+
+if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR}) 
+	# 复制测试图像到${PROJECT_BINARY_DIR}
+	get_filename_component(_current_folder ${CMAKE_CURRENT_LIST_DIR} NAME)
+	file(COPY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION ${PROJECT_BINARY_DIR}/${_current_folder})
+	unset(_current_folder)
+endif()
+
 install(TARGETS ${_target_static} testCImg
 			RUNTIME DESTINATION bin
 		  LIBRARY DESTINATION lib
