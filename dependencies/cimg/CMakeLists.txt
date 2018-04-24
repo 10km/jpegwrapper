@@ -13,9 +13,5 @@ target_include_directories(cimg INTERFACE
   $<BUILD_INTERFACE:${DEPENDENT_SOURCE_DIR}>
   $<INSTALL_INTERFACE:include>
 )
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-	target_link_libraries(cimg INTERFACE -lX11)
-endif()
-if(CMAKE_COMPILER_IS_GNUCXX)
-	target_link_libraries(cimg INTERFACE -lpthread)
-endif()
+target_link_libraries(cimg INTERFACE $<$<PLATFORM_ID:Linux>:-lX11>)
+target_link_libraries(cimg INTERFACE $<$<CXX_COMPILER_ID:GNU>:-lpthread>)

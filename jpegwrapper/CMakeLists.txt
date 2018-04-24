@@ -42,16 +42,17 @@ target_include_directories (${_target_static}
 
 target_link_libraries(${_target_static} ${TURBOJPEG_LIBRARY} openjp2 )
 ##### define testCImg #######
-add_executable( testCImg EXCLUDE_FROM_ALL testCImg.cpp )
+add_executable( testCImg testCImg.cpp )
 target_include_directories (testCImg  
 	PRIVATE ${DEPENDENT_SOURCE_DIR} 
 	)
 target_link_libraries(testCImg ${_target_static} cimg)
-
-install(TARGETS ${_target_static}
+target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
+install(TARGETS ${_target_static} testCImg
 			RUNTIME DESTINATION bin
 		  LIBRARY DESTINATION lib
       ARCHIVE DESTINATION lib/static)
+install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION bin)
 file(GLOB wrapper_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 install(FILES ${wrapper_headers} DESTINATION include)
 install(FILES ${_PUBLIC_HEADERS} DESTINATION include)

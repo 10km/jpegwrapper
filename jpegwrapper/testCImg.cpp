@@ -21,15 +21,14 @@ int main()
 	try {
 		// 定义一个每个颜色 8 位(bit)的 640x400 的彩色图像
 		//CImgWrapper<unsigned char> img(640,400,1,3);
-		std::wstring jpg_path = L"D:/tmp/人像/guyadong-1.jpg";
-		//CImg<unsigned char> image_jpg("D:/tmp/人像/guyadong-1.jpg");
+		std::wstring jpg_path = L"images/he049.jpg";
+		//CImg<unsigned char> image_jpg("images/he049.jpg");
 		//std::cout<<"D:/tmp/人像/guyadong-1.jpg"<<std::endl;
-		const char *input_jpg_file = "D:/tmp/guyadong-1.jpg";
-		//const char *input_jpg_file = "D:/tmp/hostslist.data";	
-		const char *output_jpg_file = "D:/tmp/guyadong-1-out.jpg";
-		const char *output2_jpg_file = "D:/tmp/guyadong-1-out2.jpg";
-		const char *output3_jpg_file = "D:/tmp/guyadong-1-out3.jpg";
-		const char *output4_jpg_file = "D:/tmp/guyadong-1-out4.jp2";
+		const char *input_jpg_file = "images/he049.jpg";
+		const char *output_jpg_file = "images/he049-out.jpg";
+		const char *output2_jpg_file = "images/he049-out2.jpg";
+		const char *output3_jpg_file = "images/he049-out3.jpg";
+		const char *output4_jpg_file = "images/he049-out4.jp2";
 		//CImgWrapper<unsigned char> image_jpg(input_jpg_file);
 		CImgWrapper<unsigned char> image_jpg;
 		std::vector<uint8_t> jpeg_data=gdface::load_binary_file(input_jpg_file);
