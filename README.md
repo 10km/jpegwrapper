@@ -9,8 +9,6 @@
 
 这里必须加上`--recursive`参数，以确保同时下载做为git子模块加入项目的[common_source_cpp](https://gitee.com/l0km/common_source_cpp)项目
 
-MSVC下编译为静态连接`/MT`,要求Visual Studio 2015
-
 ## 命令行编译
 
 要求cmake (2.6以上版本)
