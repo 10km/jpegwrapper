@@ -2,6 +2,8 @@
 #created:2016/01/16
 ############################################################################
 cmake_minimum_required( VERSION 2.6 )
+#cmake_policy(SET CMP0022 NEW)
+
 include (CMakePackageConfigHelpers)
 # define RUNTIME_INSTALL_DIR LIBRARY_INSTALL_DIR INCLUDE_INSTALL_DIR CONFIG_INSTALL_DIR
 set (RUNTIME_INSTALL_DIR bin)
@@ -15,8 +17,11 @@ endif()
 find_package(TurboJPEG REQUIRED)
 message(STATUS "TURBOJPEG_LIBRARY=${TURBOJPEG_LIBRARY}")
 message(STATUS "TURBOJPEG_INCLUDE_DIR=${TURBOJPEG_INCLUDE_DIR}")
-if(TURBOJPEG_LIBRARY_STATIC)
-	set (TURBOJPEG_LIBRARY ${TURBOJPEG_LIBRARY_STATIC})
+## 优先使用静态库
+if(TARGET turbojpeg-static)
+	set (turbojpeg_target "turbojpeg-static")
+else()
+	set (turbojpeg_target "turbojpeg")
 endif()
 find_package(OpenJPEG CONFIG REQUIRED)
 message(STATUS "OPENJPEG_LIBRARIES=${OPENJPEG_LIBRARIES}")
@@ -46,20 +51,19 @@ set(_target_static jpegwrapper-static)
 add_library( ${_target_static} STATIC ${SOURCE_FILES})
 if(NOT OPENJPEG_BUILD_SHARED_LIBS)
 	##指定使用openjpeg静态库
-#	add_definitions(-DOPJ_STATIC)
-	target_compile_definitions (${_target_static}
-		PUBLIC OPJ_STATIC
-		)
+	#	add_definitions(-DOPJ_STATIC)
+	target_compile_definitions (${_target_static} PUBLIC OPJ_STATIC	)
 endif()
 target_include_directories (${_target_static} 
-	PRIVATE ${TURBOJPEG_INCLUDE_DIR}
 	PRIVATE ${OPENJPEG_INCLUDE_DIRS}
 	PRIVATE ${DEPENDENT_SOURCE_DIR}
+	INTERFACE "$<INSTALL_INTERFACE:include>"
 	)
 
 target_link_libraries(${_target_static} 
-	PRIVATE ${TURBOJPEG_LIBRARY} 
-	PRIVATE openjp2 )
+	PUBLIC openjp2 ${turbojpeg_target}
+	)
+
 set_target_properties (${_target_static}  PROPERTIES 
 	PUBLIC_HEADER "${_PUBLIC_HEADERS}"
 	VERSION ${PROJECT_VERSION} 
@@ -70,10 +74,9 @@ add_executable( testCImg testCImg.cpp )
 if(NOT AUTO_BUILD_TEST)
 	set_target_properties(testCImg PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endif()
-target_link_libraries(testCImg common_source ${_target_static} cimg ${TURBOJPEG_LIBRARY} openjp2)
+target_link_libraries(testCImg common_source ${_target_static} cimg)
 target_include_directories (testCImg 
-	PRIVATE ${TURBOJPEG_INCLUDE_DIR}
-	PRIVATE ${OPENJPEG_INCLUDE_DIRS}
+	PUBLIC ${OPENJPEG_INCLUDE_DIRS}
 	)
 target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
 
