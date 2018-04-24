@@ -11,7 +11,6 @@ if errorlevel 1 (
 	exit -1
 )
 echo cmake found
-rem 需要先编译feature_se
 if exist project.vs2015 rmdir project.vs2015 /s/q
 mkdir project.vs2015
 cd project.vs2015
