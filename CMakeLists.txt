@@ -1,9 +1,20 @@
 #cmake file for project opencl
 #author:guyadong
 #created:2016/01/09
-cmake_minimum_required( VERSION 2.6 )
-project(jpegwrapper)
-
+cmake_minimum_required( VERSION 3.0 )
+cmake_policy(SET CMP0048 NEW)
+# 3.0以上版本才允许使用VERSION option
+project(jpegwrapper VERSION 1.0.0 LANGUAGES CXX)
+#判断编译类型和版本是否满足编译要求
+if(MSVC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 19)
+	message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}") 
+	message(STATUS "CMAKE_CXX_COMPILER_VERSION=${CMAKE_CXX_COMPILER_VERSION}" )
+elseif(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5)
+	message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}") 
+	message(STATUS "CMAKE_CXX_COMPILER_VERSION=${CMAKE_CXX_COMPILER_VERSION}" )
+else()
+	message(FATAL_ERROR "compiler required: Visual Studio 2015 OR gcc 5.2.0" )
+endif()
 # includes utils.cmake module
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 include (utils)
