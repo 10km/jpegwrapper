@@ -18,8 +18,11 @@ MSVC下编译为静态连接`/MT`,要求Visual Studio 2015
 
 Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)自动编译32/64位静态库
 
+示例：
+
 	mkdir build
 	push build
+	# 编译64位代码
 	call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 	cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86_64 ..
 	nmake install
@@ -28,12 +31,14 @@ Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)�
 
 使用MinGW编译，执行[build_gcc.bat](build_gcc.bat),生成32还是64位程序取决于MinGW编译器版本
 
+示例：
+
     mkdir build_gcc_x86_64
 	pushd build_gcc_x86_64
 	cmake -G "MinGW Makefiles" ^
 		-DCMAKE_BUILD_TYPE=RELEASE ^
 		-DCMAKE_C_FLAGS=-m64 ^
-		-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_gcc_x86_64 ..
+		-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-gcc-x86_64 ..
 	make install -j8
 	popd
 
@@ -46,7 +51,7 @@ linux下的命令行编译：
 	cd build.gcc
 	cmake -G "Unix Makefiles" \
 			-DCMAKE_BUILD_TYPE=RELEASE \ 
-			-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_linux_x86_64 \ 
+			-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-linux-x86_64 \ 
 			..
 	# 编译项目并安装到CMAKE_INSTALL_PREFIX指定的位置
 	make install
