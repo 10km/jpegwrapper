@@ -23,4 +23,4 @@ cmake -G "Unix Makefiles" $GXX_PATH -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_P
 make install
 popd
 
-rm -fr build
+#rm -fr build
