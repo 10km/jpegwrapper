@@ -20,4 +20,6 @@ if not defined VisualStudioVersion (
 	call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 )
 echo creating x86_64 Project for Visual Studio 2015 ...
-cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=..\release\jpegwrapper_windows_vc_x86_64 .. 
+cmake -G "Visual Studio 14 2015 Win64" ^
+	-DAUTO_BUILD_TEST=ON ^
+	-DCMAKE_INSTALL_PREFIX=..\release\jpegwrapper_windows_vc_x86_64 .. 

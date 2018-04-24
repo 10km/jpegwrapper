@@ -4,10 +4,6 @@
 cmake_minimum_required( VERSION 2.6 )
 project(jpegwrapper)
 
-#设置处理器
-if(TARGET_PROCESSOR)
-	set (CMAKE_SYSTEM_PROCESSOR ${TARGET_PROCESSOR})
-endif()
 # includes utils.cmake module
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 include (utils)
