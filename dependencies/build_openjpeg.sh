@@ -3,9 +3,9 @@ echo build openjpeg by gcc
 which cmake
 if [ ! $? -eq 0 ]
 then
-	echo cmake NOT FOUND.
-	echo download from http://cmake.org/ ,extract to disk 
-	echo add installation path to environment variable PATH
+	echo "cmake NOT FOUND."
+	echo "please install nasm,for example(CentOS): sudo yum install -y cmake3  "
+	echo "or download from http://cmake.org/ ,extract to disk echo add installation path to environment variable PATH"
 	exit -1
 fi
 echo cmake found.
@@ -24,7 +24,7 @@ pushd build_gcc_x86
 cmake -G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE=RELEASE \
 	-DCMAKE_C_FLAGS=-m32 \
-	-DCMAKE_INSTALL_PREFIX=$sh_folder/release/openjpeg-linux-x86 \
+	-DCMAKE_INSTALL_PREFIX=$sh_folder/openjpeg-linux-x86 \
 	-DBUILD_SHARED_LIBS=OFF \
 	..
 make install -j8
@@ -45,7 +45,7 @@ pushd build_gcc_x86_64
 cmake -G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE=RELEASE \
 	-DCMAKE_C_FLAGS=-m64 \
-	-DCMAKE_INSTALL_PREFIX=$sh_folder/release/openjpeg-linux-x86_64 \
+	-DCMAKE_INSTALL_PREFIX=$sh_folder/openjpeg-linux-x86_64 \
 	-DBUILD_SHARED_LIBS=OFF \
 	..
 make install -j8
