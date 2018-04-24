@@ -51,7 +51,6 @@ set(_target_static jpegwrapper-static)
 add_library( ${_target_static} STATIC ${SOURCE_FILES})
 if(NOT OPENJPEG_BUILD_SHARED_LIBS)
 	##指定使用openjpeg静态库
-	#	add_definitions(-DOPJ_STATIC)
 	target_compile_definitions (${_target_static} PUBLIC OPJ_STATIC	)
 endif()
 target_include_directories (${_target_static} 
