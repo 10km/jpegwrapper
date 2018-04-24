@@ -24,7 +24,9 @@ Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)�
 	push build
 	# 编译64位代码
 	call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
-	cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86_64 ..
+	cmake -G "NMake Makefiles" ^
+		-DCMAKE_BUILD_TYPE=RELEASE ^ 
+		-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86_64 ..
 	nmake install
 	popd
 
@@ -52,7 +54,9 @@ linux下的命令行编译：
 	cmake -G "Unix Makefiles" \
 			-DCMAKE_BUILD_TYPE=RELEASE \ 
 			-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-linux-x86_64 \ 
+			-DAUTO_BUILD_TEST=ON \
 			..
+	# AUTO_BUILD_TEST用于设定是否自动编译测试程序，默认为OFF
 	# 编译项目并安装到CMAKE_INSTALL_PREFIX指定的位置
 	make install
 	# 编译测试代码，默认情况下make不编译测试代码
