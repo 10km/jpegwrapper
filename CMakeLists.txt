@@ -20,12 +20,7 @@ if(MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	message(STATUS "optional:-D_CRT_SECURE_NO_WARNINGS")
 endif(MSVC)
-#定义公共代码位置   
-set( COMMONS_SOURCE_FOLDER ${CMAKE_SOURCE_DIR}/common_source_cpp CACHE STRING "common source folder" FORCE)
-if( NOT IS_DIRECTORY "${COMMONS_SOURCE_FOLDER}" )
-	message( FATAL_ERROR "Found common source folder: ${COMMONS_SOURCE_FOLDER}, please locate it" )	
-endif()
-message( STATUS "COMMONS_SOURCE_FOLDER= ${COMMONS_SOURCE_FOLDER}" )
+
 
 ##############设置目标文件生成位置#####################
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
@@ -40,7 +35,5 @@ foreach( subdir ${SUBDIRECTORIES} )
 endforeach()
 
 #install(FILES ${JPEG_LIBRARY_STATIC} ${OPENJP2_LIBRARY_STATIC} DESTINATION lib/static)
-#install(FILES ${INCLUDE_CIMG}/CImg.h DESTINATION include)
-#install(FILES ${COMMONS_SOURCE_FOLDER}/raii.h DESTINATION include)
 #install(DIRECTORY ${LIBJPEG_TURBO_DIR}/include DESTINATION .)
 #install(DIRECTORY ${OPENJPEG_DIR}/include DESTINATION .)

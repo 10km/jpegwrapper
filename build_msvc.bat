@@ -16,7 +16,7 @@ if exist build rmdir build /s/q
 mkdir build
 pushd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86 ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86 ..
 nmake install
 popd
 
@@ -26,7 +26,7 @@ if exist build rmdir build /s/q
 mkdir build
 pushd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper_windows_vc_x86_64 ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86_64 ..
 nmake install
 popd
 

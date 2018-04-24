@@ -2,6 +2,24 @@
 #author:guyadong
 #created:2018/04/23
 cmake_minimum_required( VERSION 2.6 )
+# 依赖代码位置
+set(DEPENDENT_SOURCE_DIR "${PROJECT_BINARY_DIR}/dependent_sources" CACHE STRINGS "dependent source folder" FORCE)
+#定义公共代码位置   
+set( COMMONS_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/common_source_cpp)
+file(GLOB _common_source_files ${COMMONS_SOURCE_DIR}/*)
+if( _common_source_files )
+	file(COPY ${_common_source_files} 
+		DESTINATION ${DEPENDENT_SOURCE_DIR} 
+		FILES_MATCHING
+		PATTERN "*.h"
+		PATTERN "*.cpp"
+		)
+	message( STATUS "copy files of ${COMMONS_SOURCE_DIR} to ${DEPENDENT_SOURCE_DIR}" )
+	unset(_common_source_files)
+else()
+	message( FATAL_ERROR "Empty common source folder: ${COMMONS_SOURCE_DIR},the submodule must be init and pull" )	
+endif()
+
 ## WITH_STATIC_CRT 定义参见 ../cmake/compiler_flag_overrides.cmake
 ##############根据编译条件定义libjpeg-turbo位置##############
 define_project_folder_name(libjpeg-turbo "${WITH_STATIC_CRT}")
