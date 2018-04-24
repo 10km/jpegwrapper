@@ -14,6 +14,10 @@ if( _common_source_files )
 		PATTERN "*.h"
 		PATTERN "*.cpp"
 		)
+	if(NOT MSVC)
+		file(REMOVE ${DEPENDENT_SOURCE_DIR}/dirent.h)
+		message(STATUS "EXCLUDE dirent.h")
+	endif()
 	message( STATUS "copy files of ${COMMONS_SOURCE_DIR} to ${DEPENDENT_SOURCE_DIR}" )
 	unset(_common_source_files)
 else()

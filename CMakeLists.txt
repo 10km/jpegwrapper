@@ -21,7 +21,6 @@ if(MSVC)
 	message(STATUS "optional:-D_CRT_SECURE_NO_WARNINGS")
 endif(MSVC)
 
-
 ##############设置目标文件生成位置#####################
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")

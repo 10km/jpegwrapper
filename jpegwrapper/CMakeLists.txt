@@ -22,9 +22,11 @@ set(SOURCE_FILES
 set (_PUBLIC_HEADERS
     ${DEPENDENT_SOURCE_DIR}/CImg.h
     ${DEPENDENT_SOURCE_DIR}/raii.h
-    ${DEPENDENT_SOURCE_DIR}/assert_macros.h
-    ${DEPENDENT_SOURCE_DIR}/dirent.h
+    ${DEPENDENT_SOURCE_DIR}/assert_macros.h    
     )
+if(MSVC)
+	list(APPEND _PUBLIC_HEADERS ${DEPENDENT_SOURCE_DIR}/dirent.h)
+endif()
 set(_target_static jpegwrapper-static)
 add_library( ${_target_static} STATIC ${SOURCE_FILES})
 if(NOT OPENJPEG_BUILD_SHARED_LIBS)
