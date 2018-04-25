@@ -89,7 +89,7 @@ linux下编译脚本 [build.sh](build.sh),编译时可能需要根据自己linux
 
 ## 第三方库
 
-所有依赖的第三方库在 [dependencies](dependencies)文件夹下
+所有依赖的第三方库在 [dependencies](dependencies)文件夹下，默认已经为openjpeg,turbojpeg提供了windows下msvc和MinGW编译编所需要的所有类型的release版本.linux版本需要用户自己执行对应的编译脚本编译。
 
 ### libjpeg-turbo 
 
@@ -105,6 +105,10 @@ linux下的编译脚本
 
 [build_jpeg_turbo.sh](dependencies/build_jpeg_turbo.sh)
 
+**NOte**:
+为了确保在linux虚拟机下也能正确编译turbojpeg，上面的编译脚本中关闭了SIMD(`-DWITH_SIMD=OFF`)。
+
+SIMD指令支持对jpeg编解码的效率很有帮助，如果要编译支持SIMD指令的版本，请在物理机linux系统下打开SIMD编译开关(`-DWITH_SIMD=ON`)再执行编译脚本。
 
 windows下编译脚本：
 
@@ -130,4 +134,43 @@ MinGW [build_openjpeg_gcc.bat](dependencies/build_openjpeg_gcc.bat)
 
 VS2015 [build_openjpeg_msvc.bat](dependencies/build_openjpeg_msvc.bat)
 
+## cmake引用jpegwrapper 库示例
 
+cmake查找 jpegwrapper 库的示例：
+
+	# CONFIG模式 jpegwrapper 依赖库
+	# 需要在 CMAKE_MODULE_PATH 指定 FindTurboJPEG.cmake的位置，本例中的位置在项目根目录下/cmake/Modules
+	# 需要在 CMAKE_PREFIX_PATH 指定 jpegwrapper以及其依赖库turbojpeg,openjpeg的安装位置
+	find_package(jpegwrapper CONFIG REQUIRED)
+
+cmake脚本中引用 jpegwrapper 库的示例：
+
+	# 引用jpegwrapper静态库
+	target_link_libraries(test_jpegwrapper gdface::jpegwrapper-static)
+	# 增加 openjpeg include
+	target_include_directories (test_jpegwrapper PUBLIC ${OPENJPEG_INCLUDE_DIRS})
+
+
+cmake脚本中引用 jpegwrapper 库的完整示例参见 [test/CMakeLists.txt](test/CMakeLists.txt)
+
+创建调用示例的VS2015工程:
+	
+	set sh_folder=%~dp0
+	pushd %sh_folder%
+	mkdir build
+	cd build
+	call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
+	rem 生成64位工程
+	set sh_folder=%sh_folder:\=/%
+	echo creating x86_64 Project for Visual Studio 2015 ...
+	cmake -G "Visual Studio 14 2015 Win64" ^
+		-DCMAKE_MODULE_PATH=%sh_folder%../cmake/Modules ^
+		-DCMAKE_PREFIX_PATH=%sh_folder%../release/jpegwrapper-windows-vc-x86_64;^%sh_folder%../dependencies/libjpeg-turbo-windows-vc-x86_64;%sh_folder%../dependencies/openjpeg-windows-vc-x86_64 ^
+		..
+	REM CMAKE_MODULE_PATH指定cmake module脚本位置
+	REM CMAKE_PREFIX_PATH指定jpegwrapper及其依赖库turbojpeg,openjpeg的安装位置
+
+完整脚本参见 [test/make_msvc_project.bat](test/make_msvc_project.bat)
+ 
+生成unix Makefile过程参见：
+[test/make_unix_makefile.sh](test/make_unix_makefile.sh)
