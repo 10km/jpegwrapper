@@ -14,6 +14,8 @@ if errorlevel 1 (
 )
 echo cmake found
 set sh_folder=%~dp0
+rem 如果要编译Debug版本则改为DEBUG
+set build_type=RELEASE
 pushd %sh_folder%
 
 call:msvc_x86
@@ -27,12 +29,12 @@ mkdir build
 pushd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86 ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%cmake\compiler_flag_overrides.cmake ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86-mt ..
 nmake install
@@ -47,12 +49,12 @@ mkdir build
 pushd build
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86_64 ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%cmake\compiler_flag_overrides.cmake ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86_64-mt ..
 nmake install

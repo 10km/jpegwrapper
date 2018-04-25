@@ -19,9 +19,9 @@ message(STATUS "TURBOJPEG_LIBRARY=${TURBOJPEG_LIBRARY}")
 message(STATUS "TURBOJPEG_INCLUDE_DIR=${TURBOJPEG_INCLUDE_DIR}")
 ## 优先使用静态库
 if(TARGET turbojpeg-static)
-	set (turbojpeg_target "turbojpeg-static")
+	set (_turbojpeg_target "turbojpeg-static")
 else()
-	set (turbojpeg_target "turbojpeg")
+	set (_turbojpeg_target "turbojpeg")
 endif()
 find_package(OpenJPEG CONFIG REQUIRED)
 message(STATUS "OPENJPEG_LIBRARIES=${OPENJPEG_LIBRARIES}")
@@ -36,16 +36,16 @@ set(SOURCE_FILES
 	jpeg_mem.cpp 
 	j2k_mem.cpp
 	)
-file(GLOB _PUBLIC_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+file(GLOB _public_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
 # 用于外部调用的公共头文件
-list (APPEND _PUBLIC_HEADERS
+list (APPEND _public_headers
     ${INCLUDE_CIMG}/CImg.h
     ${DEPENDENT_SOURCE_DIR}/raii.h
     ${DEPENDENT_SOURCE_DIR}/assert_macros.h    
     )
 if(MSVC)
-	list(APPEND _PUBLIC_HEADERS ${DEPENDENT_SOURCE_DIR}/dirent.h)
+	list(APPEND _public_headers ${DEPENDENT_SOURCE_DIR}/dirent.h)
 endif()
 set(_target_static jpegwrapper-static)
 add_library( ${_target_static} STATIC ${SOURCE_FILES})
@@ -60,11 +60,11 @@ target_include_directories (${_target_static}
 	)
 
 target_link_libraries(${_target_static} 
-	PUBLIC openjp2 ${turbojpeg_target}
+	PUBLIC openjp2 ${_turbojpeg_target}
 	)
 
 set_target_properties (${_target_static}  PROPERTIES 
-	PUBLIC_HEADER "${_PUBLIC_HEADERS}"
+	PUBLIC_HEADER "${_public_headers}"
 	VERSION ${PROJECT_VERSION} 
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	)
@@ -116,5 +116,5 @@ if(AUTO_BUILD_TEST)
 endif()
 
 unset(_target_static)
-unset(_PUBLIC_HEADERS)
-unset(turbojpeg_target)
+unset(_public_headers)
+unset(_turbojpeg_target)
