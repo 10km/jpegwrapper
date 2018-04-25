@@ -17,9 +17,6 @@ endif()
 # 需要指定CMAKE_MODULE_PATH 指定 FindTurboJPEG.cmake 的位置
 # 本例中的位置在项目根目录下/cmake/Modules
 find_package(jpegwrapper CONFIG REQUIRED)
-# include utils.cmake,location /cmake/Modules
-include (utils)
-#cxx11_support()
 # 定义所有的源文件列表  
 set(_CPP_SOURCE_FILES
     testCImg.cpp 
