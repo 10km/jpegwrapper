@@ -76,9 +76,9 @@ linux下编译脚本 [build.sh](build.sh),编译时可能需要根据自己linux
 
 核心代码很少：
 
-[j2k_mem.cpp](jpegwrapper/jpeg_mem.cpp):jpeg图像内存读写实现
+[j2k_mem.h](jpegwrapper/jpeg_mem.h):jpeg图像内存读写实现
 
-[j2k_mem.cpp](jpegwrapper/j2k_mem.cpp):jpeg2000图像内存读写实现
+[j2k_mem.h](jpegwrapper/j2k_mem.h):jpeg2000图像内存读写实现
 
 [CImgWrapper.h](jpegwrapper/CImgWrapper.h):基于CImg进一步对jpeg,j2k图像读写做便利化封装，因为CImg.h体积很大，所以使用该头文件，会导致编译时间较长
 
