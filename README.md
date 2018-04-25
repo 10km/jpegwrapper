@@ -138,7 +138,7 @@ VS2015 [build_openjpeg_msvc.bat](dependencies/build_openjpeg_msvc.bat)
 
 cmake查找 jpegwrapper 库的示例：
 
-	# CONFIG模式 jpegwrapper 依赖库
+	# CONFIG模式查找 jpegwrapper 依赖库
 	# 需要在 CMAKE_MODULE_PATH 指定 FindTurboJPEG.cmake的位置，本例中的位置在项目根目录下/cmake/Modules
 	# 需要在 CMAKE_PREFIX_PATH 指定 jpegwrapper以及其依赖库turbojpeg,openjpeg的安装位置
 	find_package(jpegwrapper CONFIG REQUIRED)
