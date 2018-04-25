@@ -167,7 +167,5 @@ image_matrix_param read_jpeg_header_file(std::FILE *const file);
 image_matrix_param read_jpeg_header_mem(const uint8_t *jpeg_data,size_t size);
 image_matrix_param read_jpeg_header_mem(const std::vector<uint8_t> &jpeg_data);
 image_matrix_param to_gray_image_matrix(const image_matrix_param&matrix);
-void image_matrix_display(const image_matrix_param&,bool original=true,const std::string& title="", const bool display_info=true, unsigned int *const XYZ=nullptr,
-        const bool exit_on_anykey=false);
 
 #endif /* FACEIMAGE_CIMGWRAPPER_JPEG_MEM_H_ */
