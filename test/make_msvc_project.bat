@@ -11,6 +11,9 @@ if errorlevel 1 (
 	exit -1
 )
 echo cmake found
+set sh_folder=%~dp0
+pushd %sh_folder%
+
 rem 需要先编译feature_se
 if exist project.vs2015 rmdir project.vs2015 /s/q
 mkdir project.vs2015
@@ -19,7 +22,6 @@ if not defined VisualStudioVersion (
 	echo make MSVC environment ...
 	call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 )
-set sh_folder=%~dp0
 set sh_folder=%sh_folder:\=/%
 echo creating x86_64 Project for Visual Studio 2015 ...
 cmake -G "Visual Studio 14 2015 Win64" ^
@@ -27,4 +29,5 @@ cmake -G "Visual Studio 14 2015 Win64" ^
 	-DCMAKE_PREFIX_PATH=%sh_folder%../release/jpegwrapper-windows-vc-x86_64;^%sh_folder%../dependencies/libjpeg-turbo-windows-vc-x86_64;%sh_folder%../dependencies/openjpeg-windows-vc-x86_64 ^
 	..
 	
+popd
 popd
