@@ -81,7 +81,7 @@ target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
 
 if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR}) 
 	# 复制测试图像到${PROJECT_BINARY_DIR}
-	get_filename_component(_current_folder ${CMAKE_CURRENT_LIST_DIR} NAME)
+	file(RELATIVE_PATH _current_folder ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
 	file(COPY ${CMAKE_CURRENT_LIST_DIR}/images DESTINATION ${PROJECT_BINARY_DIR}/${_current_folder})
 	unset(_current_folder)
 endif()
@@ -101,7 +101,7 @@ install(TARGETS ${_target_static} EXPORT jpegwrapper-targets
   RUNTIME DESTINATION ${RUNTIME_INSTALL_DIR}
   LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR}
   ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR}
-  PUBLIC_HEADER DESTINATION ${INCLUDE_INSTALL_DIR}/jpegwrapper
+  PUBLIC_HEADER DESTINATION ${INCLUDE_INSTALL_DIR}
   )
 install (FILES
   ${CMAKE_CURRENT_BINARY_DIR}/jpegwrapper-config.cmake
@@ -117,3 +117,4 @@ endif()
 
 unset(_target_static)
 unset(_PUBLIC_HEADERS)
+unset(turbojpeg_target)

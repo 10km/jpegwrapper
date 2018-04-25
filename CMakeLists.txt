@@ -16,7 +16,7 @@ else()
 	message(FATAL_ERROR "compiler required: Visual Studio 2015 OR gcc 5.2.0" )
 endif()
 # includes utils.cmake module
-set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
+list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules")
 include (utils)
 cxx11_support()
 if(MSVC)

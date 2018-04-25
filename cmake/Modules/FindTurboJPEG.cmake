@@ -27,6 +27,8 @@ include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(TURBOJPEG DEFAULT_MSG TURBOJPEG_LIBRARY TURBOJPEG_INCLUDE_DIR)
 
 if(TURBOJPEG_FOUND)
+	# for compatility of find_dependency
+	set (TurboJPEG_FOUND TRUE)
 	# Create imported target turbojpeg
 	add_library(turbojpep SHARED IMPORTED)
 	set_target_properties(turbojpep PROPERTIES
