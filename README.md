@@ -14,7 +14,7 @@
 要求cmake (2.6以上版本)
 ### windows
 
-Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)自动编译32/64位静态库
+Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)自动编译32/64位静态库(/MT /MD)，共计4个版本
 
 示例：
 
@@ -29,7 +29,7 @@ Visual Studio 2015编译,windows CMD下执行[`build_msvc.bat`](build_msvc.bat)�
 	popd
 
 
-使用MinGW编译，执行[build_gcc.bat](build_gcc.bat),生成32还是64位程序取决于MinGW编译器版本
+使用MinGW编译，执行[build_gcc.bat](build_gcc.bat),生成32还是64位程序取决于MinGW编译器版本，对于`SJLJ`版本编译器可以同时生成32/64位库。
 
 示例：
 
@@ -106,9 +106,9 @@ linux下的编译脚本
 [build_jpeg_turbo.sh](dependencies/build_jpeg_turbo.sh)
 
 **NOte**:
-为了确保在linux虚拟机下也能正确编译turbojpeg，上面的编译脚本中关闭了SIMD(`-DWITH_SIMD=OFF`)。
+为了确保在linux虚拟机下也能正确编译turbojpeg，上面的编译脚本中关闭了SIMD指令支持(`-DWITH_SIMD=OFF`)。
 
-SIMD指令支持对jpeg编解码的效率很有帮助，如果要编译支持SIMD指令的版本，请在物理机linux系统下打开SIMD编译开关(`-DWITH_SIMD=ON`)再执行编译脚本。
+SIMD指令支持对提高jpeg编解码效率很有帮助，如果要编译支持SIMD指令的版本，请在物理机linux系统下打开SIMD编译开关(`-DWITH_SIMD=ON`)再执行编译脚本。
 
 windows下编译脚本：
 
