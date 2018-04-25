@@ -23,7 +23,7 @@ if(TARGET turbojpeg-static)
 else()
 	set (_turbojpeg_target "turbojpeg")
 endif()
-find_package(OpenJPEG CONFIG REQUIRED)
+find_package(OpenJPEG REQUIRED)
 message(STATUS "OPENJPEG_LIBRARIES=${OPENJPEG_LIBRARIES}")
 message(STATUS "OPENJPEG_BUILD_SHARED_LIBS=${OPENJPEG_BUILD_SHARED_LIBS}")
 message(STATUS "OPENJPEG_INCLUDE_DIRS=${OPENJPEG_INCLUDE_DIRS}")
@@ -54,7 +54,6 @@ if(NOT OPENJPEG_BUILD_SHARED_LIBS)
 	target_compile_definitions (${_target_static} PUBLIC OPJ_STATIC	)
 endif()
 target_include_directories (${_target_static} 
-	PRIVATE ${OPENJPEG_INCLUDE_DIRS}
 	PRIVATE ${DEPENDENT_SOURCE_DIR}
 	INTERFACE "$<INSTALL_INTERFACE:include>"
 	)
@@ -74,9 +73,7 @@ if(NOT AUTO_BUILD_TEST)
 	set_target_properties(testCImg PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endif()
 target_link_libraries(testCImg common_source ${_target_static} cimg)
-target_include_directories (testCImg 
-	PUBLIC ${OPENJPEG_INCLUDE_DIRS}
-	)
+
 target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
 
 if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR}) 
