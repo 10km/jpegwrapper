@@ -10,18 +10,18 @@ then
 		exit -1
 	fi
 fi
+sh_folder=$(dirname $(readlink -f $0))
+cd $sh_folder
 if [ -d build.gcc ]
 then 
 	rm -fr build.gcc/*
 else 
 	mkdir build.gcc
 fi
-sh_folder=$(dirname $(readlink -f $0))
 
 cd build.gcc
-cmake $GXX_PATH -G "Unix Makefiles" \
+cmake $GXX_PATH -G "Unix Makefiles" .. \
 	-DCMAKE_MODULE_PATH=$sh_folder/../cmake/Modules \
-	-DCMAKE_PREFIX_PATH=$sh_folder/../release/jpegwrapper-linux-x86_64;$sh_folder/../dependencies/libjpeg-turbo-linux-x86_64;$sh_folder/../dependencies/openjpeg-linux-x86_64 \
-	..
+	-DCMAKE_PREFIX_PATH="$sh_folder/../release/jpegwrapper-linux-x86_64;$sh_folder/../dependencies/libjpeg-turbo-linux-x86_64;$sh_folder/../dependencies/openjpeg-linux-x86_64" 
 
-# popd
+
