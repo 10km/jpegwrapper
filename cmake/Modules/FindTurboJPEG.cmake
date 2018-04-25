@@ -13,7 +13,7 @@
 #   TURBOJPEG_LIBRARY, where to find the Turbo JPEG library.
 #   TURBOJPEG_LIBRARY_STATIC where to find the Turbo JPEG static library
 # import target:
-#		turbojpep
+#		turbojpeg
 # 	turbojpeg-static
 
 find_path(TURBOJPEG_INCLUDE_DIR turbojpeg.h)
@@ -30,8 +30,8 @@ if(TURBOJPEG_FOUND)
 	# for compatility of find_dependency
 	set (TurboJPEG_FOUND TRUE)
 	# Create imported target turbojpeg
-	add_library(turbojpep SHARED IMPORTED)
-	set_target_properties(turbojpep PROPERTIES
+	add_library(turbojpeg SHARED IMPORTED)
+	set_target_properties(turbojpeg PROPERTIES
 	  IMPORTED_LINK_INTERFACE_LANGUAGES "C"
 	  INTERFACE_INCLUDE_DIRECTORIES "${TURBOJPEG_INCLUDE_DIR}"
 	  IMPORTED_LOCATION "${TURBOJPEG_LIBRARY}"
