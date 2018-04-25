@@ -3,7 +3,7 @@
 #
 # Find the OpenJPEG with CONFIG mode,and set target property INTERFACE_INCLUDE_DIRECTORIES if absent
 
-find_package(openjpeg CONFIG)
+find_package(OpenJPEG CONFIG)
 
 if(TARGET openjp2)
 	# 判断是否有INTERFACE_INCLUDE_DIRECTORIES属性如果没有则添加该属性
