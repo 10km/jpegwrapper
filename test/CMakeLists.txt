@@ -19,7 +19,7 @@ endif()
 find_package(jpegwrapper CONFIG REQUIRED)
 # include utils.cmake,location /cmake/Modules
 include (utils)
-cxx11_support()
+#cxx11_support()
 # 定义所有的源文件列表  
 set(_CPP_SOURCE_FILES
     testCImg.cpp 
@@ -28,7 +28,7 @@ set(_CPP_SOURCE_FILES
 add_executable(test_jpegwrapper ${_CPP_SOURCE_FILES})
 target_include_directories (test_jpegwrapper PUBLIC ${OPENJPEG_INCLUDE_DIRS})
 target_link_libraries(test_jpegwrapper gdface::jpegwrapper-static $<$<PLATFORM_ID:Linux>:-lX11> $<$<CXX_COMPILER_ID:GNU>:-lpthread>)
-target_compile_options(test_jpegwrapper PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/wd4996 /wd4819>)
+target_compile_options(test_jpegwrapper PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/wd4996 /wd4819> $<$<CXX_COMPILER_ID:GNU>:-std=c++11>)
 if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR}) 
 	# 复制测试图像到${PROJECT_BINARY_DIR}
 	file(RELATIVE_PATH _current_folder ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
