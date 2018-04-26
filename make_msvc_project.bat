@@ -23,6 +23,7 @@ if not defined VisualStudioVersion (
 echo creating x86_64 Project for Visual Studio 2015 ...
 cmake -G "Visual Studio 14 2015 Win64" ^
 	-DAUTO_BUILD_TEST=ON ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=..\release\jpegwrapper-windows-vc-x86_64 .. 
 	
 popd

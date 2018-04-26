@@ -28,6 +28,7 @@ set sh_folder=%sh_folder:\=/%
 echo creating x86_64 Project for MinGW ...
 cmake -G "MinGW Makefiles" ^
 	-DCMAKE_MODULE_PATH=%sh_folder%../cmake/Modules ^
+	-DCMAKE_BUILD_TYPE=DEBUG ^
 	-DCMAKE_PREFIX_PATH=%sh_folder%../release/jpegwrapper-windows-gcc-x86_64;^%sh_folder%../dependencies/libjpeg-turbo-windows-gcc-x86_64;%sh_folder%../dependencies/openjpeg-windows-gcc-x86_64 ^
 	..
 	

@@ -11,6 +11,8 @@ fi
 echo cmake found.
 
 sh_folder=$(dirname $(readlink -f $0))
+# 如果要编译Debug版本则改为DEBUG
+build_type=DEBUG
 
 build_gcc_x86(){
 echo "build x86 use gcc"
@@ -22,7 +24,8 @@ else
 fi
 pushd build_gcc_x86
 cmake -G "Unix Makefiles" \
-	-DCMAKE_BUILD_TYPE=RELEASE \
+	-DCMAKE_BUILD_TYPE=$build_type \
+	-DCMAKE_DEBUG_POSTFIX=_d \
 	-DCMAKE_C_FLAGS=-m32 \
 	-DCMAKE_INSTALL_PREFIX=$sh_folder/openjpeg-linux-x86 \
 	-DBUILD_SHARED_LIBS=OFF \
@@ -43,7 +46,8 @@ fi
 
 pushd build_gcc_x86_64
 cmake -G "Unix Makefiles" \
-	-DCMAKE_BUILD_TYPE=RELEASE \
+	-DCMAKE_BUILD_TYPE=$build_type \
+	-DCMAKE_DEBUG_POSTFIX=_d \
 	-DCMAKE_C_FLAGS=-m64 \
 	-DCMAKE_INSTALL_PREFIX=$sh_folder/openjpeg-linux-x86_64 \
 	-DBUILD_SHARED_LIBS=OFF \

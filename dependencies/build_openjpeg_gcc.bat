@@ -16,7 +16,12 @@ if errorlevel 1 (
 )
 echo cmake found.
 
-set sh_folder=%~sdp0
+set sh_folder=%~dp0
+rem 定义编译的版本类型(DEBUG|RELEASE)
+set build_type=RELEASE
+rem 如果输入参数1为"DEBUG"(不区分大小写)则编译DEBUG版本
+if /I "%1" == "DEBUG" ( set build_type=DEBUG) 
+echo build_type=%build_type%
 
 set source_folder=openjpeg-version.2.1
 if not exist %source_folder% (
@@ -47,8 +52,9 @@ mkdir build_gcc_x86
 pushd build_gcc_x86
 rem gcc SJLJ or DWARF distribution required
 cmake -G "MinGW Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_C_FLAGS=-m32 ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-gcc-x86 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
@@ -65,8 +71,9 @@ mkdir build_gcc_x86_64
 pushd build_gcc_x86_64
 rem gcc SJLJ or SEH distribution required
 cmake -G "MinGW Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_C_FLAGS=-m64 ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-gcc-x86_64 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..

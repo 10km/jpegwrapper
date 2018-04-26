@@ -1,0 +1,2 @@
+call build_openjpeg_msvc DEBUG
+call build_openjpeg_msvc RELEASE

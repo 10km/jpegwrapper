@@ -15,7 +15,12 @@ if errorlevel 1 (
 )
 echo cmake found.
 
-set sh_folder=%~sdp0
+set sh_folder=%~dp0
+rem 定义编译的版本类型(DEBUG|RELEASE)
+set build_type=RELEASE
+rem 如果输入参数1为"DEBUG"(不区分大小写)则编译DEBUG版本
+if /I "%1" == "DEBUG" ( set build_type=DEBUG) 
+echo build_type=%build_type%
 
 set source_folder=openjpeg-version.2.1
 if not exist %source_folder% (
@@ -33,14 +38,16 @@ cd build
 echo make MSVC x86 environment ...
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..
@@ -56,14 +63,16 @@ echo make MSVC amd64 environment ...
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86_64-mt ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/openjpeg-windows-vc-x86_64 ^
 	-DBUILD_SHARED_LIBS=OFF ^
 	..

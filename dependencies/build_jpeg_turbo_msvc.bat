@@ -23,7 +23,12 @@ if errorlevel 1 (
 	exit -1
 )
 echo nasm found.
-set sh_folder=%~sdp0
+set sh_folder=%~dp0
+rem 定义编译的版本类型(DEBUG|RELEASE)
+set build_type=RELEASE
+rem 如果输入参数1为"DEBUG"(不区分大小写)则编译DEBUG版本
+if /I "%1" == "DEBUG" ( set build_type=DEBUG) 
+echo build_type=%build_type%
 
 set source_folder=libjpeg-turbo-1.5.90
 if not exist %source_folder% (
@@ -41,12 +46,14 @@ echo make MSVC x86 environment ...
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86-mt ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DWITH_CRT_DLL=TRUE ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86 ..
 nmake clean install
@@ -61,12 +68,14 @@ echo make MSVC amd64 environment ...
 call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86_64-mt ..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
-	-DCMAKE_BUILD_TYPE=RELEASE ^
+	-DCMAKE_BUILD_TYPE=%build_type% ^
+	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DWITH_CRT_DLL=TRUE ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86_64 ^
 	..
