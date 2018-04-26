@@ -1,4 +1,5 @@
-echo off 
+@rem 根据%%1参数 编译DEBUG|RELEASE版本,默认RELEASE
+@echo off 
 echo build jpeg-turbo by MinGW
 where gcc
 if errorlevel 1 (

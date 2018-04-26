@@ -1,4 +1,5 @@
-echo off 
+@rem 根据%%1参数 编译DEBUG|RELEASE版本,默认RELEASE
+@echo off  
 echo build jpegwrapper by VS2015
 if not defined VS140COMNTOOLS (
 	echo vs2015 NOT FOUND.

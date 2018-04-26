@@ -1,4 +1,5 @@
 #!/bin/bash
+# 根据$1参数 编译DEBUG|RELEASE版本,默认RELEASE
 echo build jpeg-turbo by MinGW
 which cmake
 if [ ! $? -eq 0 ]
@@ -19,17 +20,16 @@ then
 fi
 echo nasm found.
 sh_folder=$(dirname $(readlink -f $0))
-# 如果要编译Debug版本则改为DEBUG
-build_type=DEBUG
+# 定义编译的版本类型(DEBUG|RELEASE)
+build_type=RELEASE
+typeset -u arg1=$1
+[ "$arg1" = "DEBUG" ] && build_type=$arg1
+echo build_type=$build_type
 
 build_gcc_x86(){
 echo "build x86 use gcc"
-if [ -d build_gcc_x86 ]
-then 
-	rm -fr build_gcc_x86/*
-else 
-	mkdir build_gcc_x86
-fi
+[ -d build_gcc_x86 ] && rm -fr build_gcc_x86
+mkdir build_gcc_x86
 pushd build_gcc_x86
 
 cmake -G "Unix Makefiles" \
@@ -46,13 +46,8 @@ rm -fr build_gcc_x86
 
 build_gcc_x86_64(){
 #echo "build x86_64 use gcc"
-if [ -d build_gcc_x86_64 ]
-then 
-	rm -fr build_gcc_x86_64/*
-else 
-	mkdir build_gcc_x86_64
-fi
-
+[ -d build_gcc_x86_64 ] && rm -fr build_gcc_x86_64
+mkdir build_gcc_x86_64
 pushd build_gcc_x86_64
 
 cmake -G "Unix Makefiles" \
