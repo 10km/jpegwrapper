@@ -11,7 +11,7 @@ if(TARGET openjp2)
 	if(_include)
 		# do nothing		
 	else()
-		target_include_directories(openjp2 INTERFACE ${OPENJPEG_INCLUDE_DIRS})
+		set_target_properties(openjp2 PROPERTIES  INTERFACE_INCLUDE_DIRECTORIES "${OPENJPEG_INCLUDE_DIRS}")
 		message(STATUS "add INTERFACE_INCLUDE_DIRECTORIES property for openjp2")
 	endif()
 	unset(_include)
