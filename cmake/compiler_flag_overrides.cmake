@@ -20,23 +20,21 @@ if(MSVC)
 	    if(${var} MATCHES "/MD")
 	      string(REGEX REPLACE "/MD" "/MT" ${var} "${${var}}")
 	      set( has_replaced on)
-	    endif()   
-#	    if(${var} MATCHES "/Z[iI]")
-#	    	# use /Z7 option to produces an .obj file containing full symbolic debugging information for use with the debugger
-#	    	# for detail,see https://msdn.microsoft.com/zh-cn/library/958x11bc.aspx
-#	      string(REGEX REPLACE "/Z[iI]" "/Z7" ${var} "${${var}}")
-#	      set( has_replaced on)
-#	    endif() 
+	    endif()
 	    if( has_replaced ) 
 	    	MESSAGE(STATUS  "${var}:${${var}}")
 			endif( has_replaced )
 			unset( has_replaced )
 	  endforeach()
   endif(WITH_STATIC_CRT)
-	# use /Z7 option to produces an .obj file containing full symbolic debugging information for use with the debugger
-	# for detail,see https://msdn.microsoft.com/zh-cn/library/958x11bc.aspx
-  string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS_DEBUG_INIT "${CMAKE_C_FLAGS_DEBUG_INIT}")
-  string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG_INIT "${CMAKE_CXX_FLAGS_DEBUG_INIT}")
-  MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG_INIT=${CMAKE_C_FLAGS_DEBUG_INIT}")
-  MESSAGE(STATUS "CMAKE_CXX_FLAGS_DEBUG_INIT=${CMAKE_CXX_FLAGS_DEBUG_INIT}")
+  # for detail,see https://msdn.microsoft.com/zh-cn/library/958x11bc.aspx
+  option(WITH_DEBUG_Z7 
+  	"use /Z7 option to produces an .obj file containing full symbolic debugging information for use with the debugger" 
+  	FALSE)
+  if(WITH_DEBUG_Z7)
+	  string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_C_FLAGS_DEBUG_INIT "${CMAKE_C_FLAGS_DEBUG_INIT}")
+	  string(REGEX REPLACE "/Z[iI]" "/Z7" CMAKE_CXX_FLAGS_DEBUG_INIT "${CMAKE_CXX_FLAGS_DEBUG_INIT}")
+	  MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG_INIT=${CMAKE_C_FLAGS_DEBUG_INIT}")
+	  MESSAGE(STATUS "CMAKE_CXX_FLAGS_DEBUG_INIT=${CMAKE_CXX_FLAGS_DEBUG_INIT}")
+	endif()
 endif(MSVC)
