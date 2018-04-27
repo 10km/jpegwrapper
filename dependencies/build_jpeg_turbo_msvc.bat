@@ -49,14 +49,20 @@ call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86-mt ..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86-mt ^
+	-DWITH_DEBUG_Z7=ON ^
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ^
+	..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DWITH_CRT_DLL=TRUE ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86 ..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86 ^
+	-DWITH_DEBUG_Z7=ON ^
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ^
+	..
 nmake clean install
 cd ..
 
@@ -71,7 +77,10 @@ call "%VS140COMNTOOLS%..\..\vc/vcvarsall" x86_amd64
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
-	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86_64-mt ..
+	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86_64-mt ^
+	-DWITH_DEBUG_Z7=ON ^
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ^
+	..
 nmake install
 del * /s/q
 cmake -G "NMake Makefiles" ^
@@ -79,6 +88,8 @@ cmake -G "NMake Makefiles" ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
 	-DWITH_CRT_DLL=TRUE ^
 	-DCMAKE_INSTALL_PREFIX=%sh_folder%/libjpeg-turbo-windows-vc-x86_64 ^
+	-DWITH_DEBUG_Z7=ON ^
+	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%\..\cmake\compiler_flag_overrides.cmake ^
 	..
 nmake clean install
 cd ..
