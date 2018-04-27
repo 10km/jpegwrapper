@@ -57,7 +57,9 @@ target_include_directories (${_target_static}
 	PRIVATE ${DEPENDENT_SOURCE_DIR}
 	INTERFACE "$<INSTALL_INTERFACE:include>"
 	)
-
+# MSVC Debug 编译时生成包含用于调试器的完整符号调试信息的 .obj 文件
+# see also https://msdn.microsoft.com/zh-cn/library/958x11bc.aspx
+target_compile_options(${_target_static} PRIVATE $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/Z7>)
 target_link_libraries(${_target_static} 
 	PUBLIC openjp2 ${_turbojpeg_target}
 	)
