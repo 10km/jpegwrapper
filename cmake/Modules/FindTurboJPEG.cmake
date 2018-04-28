@@ -17,7 +17,7 @@
 
 find_path(TURBOJPEG_INCLUDE_DIR turbojpeg.h)
 
-set(TURBOJPEG_NAMES ${TURBOJPEG_NAMES} turbojpeg libturbojpeg)
+set(TURBOJPEG_NAMES ${TURBOJPEG_NAMES} turbojpeg turbojpeg-static)
 find_library(TURBOJPEG_LIBRARY NAMES ${TURBOJPEG_NAMES} )
 
 # handle the QUIETLY and REQUIRED arguments and set TURBOJPEG_FOUND to TRUE if
@@ -43,11 +43,37 @@ macro(debug_library lib_var)
 	unset(_ext)
 	unset(_path)
 endmacro()
+# 根据文件名后缀判断是否为动态库
+# 创建${lib_var}_SHARED 变量，为true则是动态库，false为静态库，其他类型则报错
+macro(is_shared_library lib_var)
+	if(NOT DEFINED ${lib_var})
+		message(FATAL_ERROR "not defined lib_var:${lib_var}")
+	endif()
+	get_filename_component(_ext ${${lib_var}} EXT)
+	get_filename_component(_name ${${lib_var}} NAME)
+	if(MSVC AND _name MATCHES "-static")
+		set(${lib_var}_SHARED FALSE)
+	elseif("${_ext}" STREQUAL "${CMAKE_IMPORT_LIBRARY_SUFFIX}")
+		set(${lib_var}_SHARED TRUE)
+	elseif("${_ext}" STREQUAL "${CMAKE_STATIC_LIBRARY_SUFFIX}")
+		set(${lib_var}_SHARED FALSE)
+	else()
+		message(FATAL_ERROR "not library file:${${lib_var}}")
+	endif()	
+	unset(_ext)
+	unset(_name)
+endmacro()
+
 if(TURBOJPEG_FOUND)
 	# for compatility of find_dependency
 	set (TurboJPEG_FOUND TRUE)
+	is_shared_library(TURBOJPEG_LIBRARY)
 	# Create imported target turbojpeg
-	add_library(turbojpeg SHARED IMPORTED)
+	if(TURBOJPEG_LIBRARY_SHARED)
+		add_library(turbojpeg SHARED IMPORTED)
+	else()
+		add_library(turbojpeg STATIC IMPORTED)
+	endif()
 	# Import target "turbojpeg" for configuration "RELEASE"
 	set_property(TARGET turbojpeg APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 	set_target_properties(turbojpeg PROPERTIES
@@ -63,9 +89,8 @@ if(TURBOJPEG_FOUND)
 		  IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
 		  IMPORTED_LOCATION_DEBUG "${TURBOJPEG_LIBRARY_DEBUG}"
 		  )
-		 message(STATUS "deubug library ${TURBOJPEG_LIBRARY_DEBUG}")
 	endif()
-		
+	## 查找静态库
 	if(MSVC)
 		set(_stati_library_name ${CMAKE_STATIC_LIBRARY_PREFIX}turbojpeg-static${CMAKE_STATIC_LIBRARY_SUFFIX})
 	else()
@@ -90,7 +115,6 @@ if(TURBOJPEG_FOUND)
 			  IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
 			  IMPORTED_LOCATION_DEBUG "${TURBOJPEG_LIBRARY_STATIC_DEBUG}"
 			  )
-			message(STATUS "TURBOJPEG_LIBRARY_STATIC_DEBUG=${TURBOJPEG_LIBRARY_STATIC_DEBUG}")
 		endif()
 		message(STATUS "TURBOJPEG_LIBRARY_STATIC=${TURBOJPEG_LIBRARY_STATIC}")
 	else()
