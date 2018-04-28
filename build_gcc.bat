@@ -4,7 +4,7 @@ echo build jpegwrapper by MinGW
 where gcc
 if errorlevel 1 (
 	echo MinGW/gcc NOT FOUND.
-	exit -1
+	exit /B -1
 )
 echo MinGW/gcc found.
 where cmake
@@ -12,8 +12,7 @@ if errorlevel 1 (
 	echo cmake NOT FOUND.
 	echo download from http://cmake.org/ ,extract to disk 
 	echo add installation path to environment variable PATH
-	pause
-	exit -1
+	exit /B -1
 )
 echo cmake found.
 

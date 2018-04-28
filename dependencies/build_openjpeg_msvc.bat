@@ -3,7 +3,7 @@
 echo build jpegwrapper by VS2015
 if not defined VS140COMNTOOLS (
 	echo vs2015 NOT FOUND.
-	exit -1
+	exit /B -1
 )
 echo vs2015 found.
 where cmake
@@ -11,8 +11,7 @@ if errorlevel 1 (
 	echo cmake NOT FOUND.
 	echo download from http://cmake.org/ ,extract to disk 
 	echo add installation path to environment variable PATH
-	pause
-	exit -1
+	exit /B -1
 )
 echo cmake found.
 
@@ -26,8 +25,7 @@ echo build_type=%build_type%
 set source_folder=openjpeg-version.2.1
 if not exist %source_folder% (
 	echo not found source folder: %source_folder%,please unzip %source_folder%.zip in current folder
-	pause
-	exit -1
+	exit /B -1
 	)
 pushd %sh_folder%\%source_folder%
 
