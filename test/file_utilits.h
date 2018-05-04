@@ -61,7 +61,11 @@ inline std::string load_string(const char *filename){
 /* 获取当前路径 */
 inline std::string getcwd(){
 	raii_var<char*> raii_str(
-			[](){return ::getcwd(nullptr,0);},
+#ifdef _MSC_VER
+			[](){return _getcwd(nullptr,0);},
+#else
+			[]() {return ::getcwd(nullptr, 0); },
+#endif
 			[](char*p){free(p);}
 			);
 	return std::string(*raii_str);

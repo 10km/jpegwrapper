@@ -76,8 +76,6 @@ if(NOT AUTO_BUILD_TEST)
 endif()
 target_link_libraries(testCImg common_source ${_target_static} cimg)
 
-target_compile_options(testCImg PUBLIC $<$<CXX_COMPILER_ID:MSVC>:/wd4996>)
-
 if(NOT ${PROJECT_BINARY_DIR} STREQUAL ${PROJECT_SOURCE_DIR}) 
 	# 复制测试图像到${PROJECT_BINARY_DIR}
 	file(RELATIVE_PATH _current_folder ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_LIST_DIR})
