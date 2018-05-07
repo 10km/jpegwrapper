@@ -42,3 +42,5 @@ release/
 *.ilk
 *.cache
 project.vs2015/
+/test.gcc/
+/test.mingw/
