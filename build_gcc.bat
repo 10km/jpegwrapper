@@ -16,7 +16,7 @@ if errorlevel 1 (
 )
 echo cmake found.
 
-set sh_folder=%dp0
+set sh_folder=%~dp0
 rem 定义编译的版本类型(DEBUG|RELEASE)
 set build_type=RELEASE
 rem 如果输入参数1为"DEBUG"(不区分大小写)则编译DEBUG版本
