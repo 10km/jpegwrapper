@@ -40,6 +40,8 @@ del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
+	-DWITH_STATIC_CRT=ON ^
+	-DWITH_DEBUG_Z7=ON ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%cmake\compiler_flag_overrides.cmake ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86-mt ..
 nmake install
@@ -62,6 +64,8 @@ del * /s/q
 cmake -G "NMake Makefiles" ^
 	-DCMAKE_BUILD_TYPE=%build_type% ^
 	-DCMAKE_DEBUG_POSTFIX=_d ^
+	-DWITH_STATIC_CRT=ON ^
+	-DWITH_DEBUG_Z7=ON ^
 	-DCMAKE_USER_MAKE_RULES_OVERRIDE=%sh_folder%cmake\compiler_flag_overrides.cmake ^
 	-DCMAKE_INSTALL_PREFIX=../release/jpegwrapper-windows-vc-x86_64-mt ..
 nmake install

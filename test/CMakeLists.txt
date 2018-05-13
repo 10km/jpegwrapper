@@ -21,7 +21,7 @@ find_package(jpegwrapper CONFIG REQUIRED)
 set(_CPP_SOURCE_FILES
     testCImg.cpp 
     )
-
+include(utils)
 add_executable(test_jpegwrapper ${_CPP_SOURCE_FILES})
 target_link_libraries(test_jpegwrapper gdface::jpegwrapper-static $<$<PLATFORM_ID:Linux>:-lX11> $<$<CXX_COMPILER_ID:GNU>:-lpthread>)
 target_compile_options(test_jpegwrapper PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/wd4819> $<$<CXX_COMPILER_ID:GNU>:-std=c++11>)
