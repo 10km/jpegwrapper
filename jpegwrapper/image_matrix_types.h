@@ -69,7 +69,8 @@ int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix);
 // 用指定的参数填充一个fs_image_matrix结构体
 // 返回值0失败 1成功
 int fs_make_matrix(fs_image_matrix_ptr matrix,uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
-// 创建一个fs_image_matrix结构体
+// 创建一个fs_image_matrix结构体,C语言环境下,对象必须调用fs_free_matrix释放
+// pixels 提供原始图像矩阵数据,为null时，自动根据width,heigh,channels,align参数计算大小申请内存
 fs_image_matrix_ptr fs_new_matrix(uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
 fs_image_matrix_ptr fs_new_matrix_s(uint32_t with, uint32_t height, FS_COLOR_SPACE  color_space);
 // 释放fs_image_matrix对象，释放matrix指针

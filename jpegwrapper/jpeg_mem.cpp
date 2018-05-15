@@ -414,7 +414,7 @@ inline jpeg_compress_default::jpeg_compress_default(const fs_image_matrix & matr
 	row_stride = matrix.get_row_stride();
 }
 
-inline void jpeg_compress_default::start_output(jpeg_compress_struct & cinfo) {
+void jpeg_compress_default::start_output(jpeg_compress_struct & cinfo) {
 	cinfo.image_width = matrix.width;
 	cinfo.image_height = matrix.height;
 	cinfo.input_components = matrix.channels;
@@ -435,7 +435,7 @@ inline jpeg_decompress_default::jpeg_decompress_default(uint8_t align) :next_lin
 
 inline jpeg_decompress_default::jpeg_decompress_default() : jpeg_decompress_default(0) {}
 
-inline void jpeg_decompress_default::start_output(const jpeg_decompress_struct & dinfo) {
+void jpeg_decompress_default::start_output(const jpeg_decompress_struct & dinfo) {
 	// 填充图像基本信息结构
 	auto b = fs_make_matrix(&matrix,
 		dinfo.output_width,

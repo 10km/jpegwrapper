@@ -48,27 +48,27 @@ opj_stream_t* opj_stream_create_si(opj_stream_interface& stream, OPJ_SIZE_T p_si
 	throw opj_exception("fail to ceate stream:opj_stream_create");
 }
 
-opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream) {
+inline opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream) {
 	return opj_stream_create_si(stream, OPJ_J2K_STREAM_CHUNK_SIZE);
 }
 
-void opj_stream_interface_close(opj_stream_interface* stream_instance) {
+inline void opj_stream_interface_close(opj_stream_interface* stream_instance) {
 	stream_instance->close();
 }
 
-OPJ_BOOL opj_stream_interface_seek(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
+inline OPJ_BOOL opj_stream_interface_seek(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->seek(p_nb_bytes);
 }
 
-OPJ_OFF_T opj_stream_interface_skip(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
+inline OPJ_OFF_T opj_stream_interface_skip(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->skip(p_nb_bytes);
 }
 
-OPJ_SIZE_T opj_stream_interface_write(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
+inline OPJ_SIZE_T opj_stream_interface_write(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->write(p_buffer, p_nb_bytes);
 }
 
-OPJ_SIZE_T opj_stream_interface_read(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
+inline OPJ_SIZE_T opj_stream_interface_read(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->read(p_buffer, p_nb_bytes);
 }
 /* 从fs_image_matrix创建 opj_image_t
