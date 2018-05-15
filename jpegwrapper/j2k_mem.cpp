@@ -4,6 +4,7 @@
  *  Created on: 2016年1月26日
  *      Author: guyadong
  */
+#include <memory>
 #include "j2k_mem.h"
 #include "raii.h"
 #include "assert_macros.h"
@@ -177,8 +178,10 @@ void save_j2k(opj_image_t* image, opj_cparameters_t *parameters ,opj_stream_inte
 		const size_t clen = strlen(comment);
 		const char* version = opj_version();
 		parameters->cp_comment = (char*) (malloc(clen + strlen(version) + 1));
-		sprintf(parameters->cp_comment, "%s%s", comment, version);
-		set_comment = true;
+		if (nullptr != parameters->cp_comment) {
+			sprintf(parameters->cp_comment, "%s%s", comment, version);
+			set_comment = true;
+		}
 	}
 	opj_codec_t* l_codec = opj_create_compress((CODEC_FORMAT)parameters->cod_format);
 	/* catch events using our callbacks and give a local context */
@@ -209,35 +212,35 @@ void save_j2k(opj_image_t* image, opj_cparameters_t *parameters ,opj_stream_inte
 // 默认压缩质量100
 // 默认压缩格式为OPJ_CODEC_JP2
 void save_j2k(const fs_image_matrix& matrix, opj_stream_interface& dest, const unsigned int quality, OPJ_CODEC_FORMAT format) {
-	opj_cparameters_t parameters;
+	auto parameters= std::make_shared<opj_cparameters_t>();
 	/* set encoding parameters to default values */
-	opj_set_default_encoder_parameters(&parameters);
-	parameters.tcp_numlayers=1;
-	parameters.tcp_distoratio[0]=(float)(quality>100?100:quality);
-	parameters.cp_fixed_quality=1;
-	/*parameters.tcp_numlayers=1;
-	parameters.tcp_rates[0]=5;
-	//parameters.tcp_rates[1]=40;
-	//parameters.tcp_rates[2]=10;
-	 parameters.cp_disto_alloc = 1;*/
+	opj_set_default_encoder_parameters(parameters.get());
+	parameters->tcp_numlayers=1;
+	parameters->tcp_distoratio[0]=(float)(quality>100?100:quality);
+	parameters->cp_fixed_quality=1;
+	/*parameters->tcp_numlayers=1;
+	parameters->tcp_rates[0]=5;
+	//parameters->tcp_rates[1]=40;
+	//parameters->tcp_rates[2]=10;
+	 parameters->cp_disto_alloc = 1;*/
 	/*switch(format){
 	case OPJ_CODEC_JP2:
-		parameters.cod_format=1;
+		parameters->cod_format=1;
 		break;
 	case OPJ_CODEC_JPT:
-		parameters.cod_format=2;
+		parameters->cod_format=2;
 		break;
 	default:
-		parameters.cod_format=OPJ_CODEC_J2K;
+		parameters->cod_format=OPJ_CODEC_J2K;
 	}*/
-	parameters.cod_format=format;
+	parameters->cod_format=format;
 	gdface::raii_var<opj_image_t*> raii_image([&]() {
-		return opj_image_create_from_matrix(matrix, &parameters);
+		return opj_image_create_from_matrix(matrix, parameters.get());
 	}, [](opj_image_t*image) {
 		/* free image data */
 		opj_image_destroy (image);
 	});
-	save_j2k(*raii_image, &parameters,dest);
+	save_j2k(*raii_image, parameters.get(),dest);
 }
 // 将一个fs_image_matrix数据压缩成jpeg2000格式输出到内存流对象(opj_stream_mem_output)
 // 默认压缩质量100

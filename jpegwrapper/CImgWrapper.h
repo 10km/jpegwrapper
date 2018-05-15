@@ -13,6 +13,7 @@
 #endif
 #include <vector>
 #include <functional>
+#include <memory>
 #ifdef _MSC_VER
 // 关闭编译CImg.h时产生的警告
 #pragma  warning( push ) 
@@ -242,21 +243,21 @@ public:
 					const unsigned int quality = 100,
 					OPJ_CODEC_FORMAT format=OPJ_CODEC_JP2
 					) const {
-		opj_cparameters_t parameters;
+		auto parameters = std::make_shared<opj_cparameters_t>();
 		/* set encoding parameters to default values */
-		opj_set_default_encoder_parameters(&parameters);
-		parameters.cod_format=format;
-		parameters.tcp_numlayers=1;
-		parameters.tcp_distoratio[0]=(float)(quality>100?100:quality);
-		parameters.cp_fixed_quality=1;
+		opj_set_default_encoder_parameters(parameters.get());
+		parameters->cod_format=format;
+		parameters->tcp_numlayers=1;
+		parameters->tcp_distoratio[0]=(float)(quality>100?100:quality);
+		parameters->cp_fixed_quality=1;
 		gdface::raii_var<opj_image_t*> raii_image([&]() {
-			return create_opj_image(parameters);
+			return create_opj_image(*parameters);
 		}, [](opj_image_t*image) {
 			/* free image data */
 			opj_image_destroy (image);
 		});
 		opj_stream_mem_output out;
-		save_j2k(*raii_image,&parameters,out);
+		save_j2k(*raii_image,parameters.get(),out);
 		return std::move(out);
 	}
 	const CImgWrapper<T>& save_mem_j2k(
