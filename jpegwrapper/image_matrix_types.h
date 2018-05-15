@@ -1,7 +1,6 @@
 #ifndef COMMON_SOURCE_CPP_IMAGE_MATRIX_TYPES_H
 #define COMMON_SOURCE_CPP_IMAGE_MATRIX_TYPES_H
 #include <stdint.h>
-#include <stdlib.h>
 // 色彩定义，与jpeglib.h J_COLOR_SPACE定义一致
 typedef enum {
 	FSC_UNKNOWN,            /* error/unspecified */

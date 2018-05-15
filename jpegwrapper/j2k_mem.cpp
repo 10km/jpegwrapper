@@ -5,7 +5,9 @@
  *      Author: guyadong
  */
 #include "j2k_mem.h"
+#include "raii.h"
 #include "assert_macros.h"
+#define DEFAULT_MEM_STREAM_INIT_SIZE (1024*16)
 
 /**
  sample error callback expecting a FILE* client object
@@ -377,9 +379,111 @@ fs_image_matrix load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FO
 	});
 	return create_matrix_from_opj_image(*raii_image);
 }
-/* 从jpeg_data指定的内存数据中解码指定格式(format)的jpeg2000图像
- * 返回 fs_image_matrix对象,出错则抛出opj_exception异常
- */
-fs_image_matrix load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format){
-	return load_j2k_mem(jpeg_data.data(),jpeg_data.size(),format);
+
+opj_stream_mem_input::opj_stream_mem_input(const void * data, size_t size) :_data(reinterpret_cast<const uint8_t*>(data)), size(size) {
+	if (nullptr == data)
+		throw opj_stream_exception("input data is null");
+	start = const_cast<uint8_t*>(_data);
+	cursor = start;
+	last = start + size;
 }
+
+OPJ_SIZE_T opj_stream_mem_input::read(void * p_buffer, OPJ_SIZE_T p_nb_bytes) const {
+	if (last>cursor) {
+		auto len = std::min((OPJ_SIZE_T)(last - cursor), p_nb_bytes);
+		if (len) {
+			memcpy(p_buffer, cursor, len);
+			cursor += len;
+			return len;
+		}
+	}
+	return (OPJ_SIZE_T)-1;
+}
+
+inline OPJ_SIZE_T opj_stream_mem_input::write(void * p_buffer, OPJ_SIZE_T p_nb_bytes) {
+	// input stream不能写入
+	return 0;
+}
+
+inline uint8_t * opj_stream_mem_input::stream_data() const {
+	return const_cast<uint8_t*>(_data);
+}
+
+inline opj_stream_mem_output::opj_stream_mem_output() :opj_stream_mem_output(DEFAULT_MEM_STREAM_INIT_SIZE) {}
+
+opj_stream_mem_output::opj_stream_mem_output(size_t init_capacity) :base(init_capacity) {
+	start = stream_data();
+	end = stream_data() + size();
+	cursor = stream_data();
+	last = stream_data();
+}
+
+inline OPJ_SIZE_T opj_stream_mem_output::read(void * p_buffer, OPJ_SIZE_T p_nb_bytes) const {
+	// output stream不能读取
+	return 0;
+}
+
+OPJ_SIZE_T opj_stream_mem_output::write(void * p_buffer, OPJ_SIZE_T p_nb_bytes) {
+	auto left = (OPJ_SIZE_T)(end - cursor);
+	if (p_nb_bytes>left) {
+		// 容量不足时先扩充(至少扩充1倍)
+		auto off_cur = cursor - start;
+		auto off_last = last - start;
+		try {
+			base::resize(base::size() + std::max(p_nb_bytes - left, (OPJ_SIZE_T)base::size()));
+		}
+		catch (...) {
+			// 处理resize失败抛出的异常
+#ifndef NDEBUG
+			std::cerr << "exception on call vector::resize" << std::endl;
+#endif
+			return 0;
+		}
+		start = stream_data();
+		end = start + base::size();
+		last = start + off_last;
+		cursor = start + off_cur;
+	}
+	memcpy(cursor, p_buffer, p_nb_bytes);
+	auto old_cursor = cursor;
+	cursor += p_nb_bytes;
+	if (cursor>last) {
+		if (old_cursor>last) {
+			memset(last, 0, old_cursor - last);
+		}
+		last = cursor;
+	}
+	return p_nb_bytes;
+}
+
+inline uint8_t * opj_stream_mem_output::stream_data() const {
+	return const_cast<uint8_t*>(base::data());
+}
+
+inline OPJ_BOOL opj_stream_mem_output::is_read_stream() const { return 0; }
+
+OPJ_BOOL opj_stream_mem_abstract::seek(OPJ_OFF_T p_nb_bytes) const {
+	if (p_nb_bytes >= 0) {
+		cursor = start + p_nb_bytes;
+		return OPJ_TRUE;
+	}
+	return OPJ_FALSE;
+}
+
+OPJ_OFF_T opj_stream_mem_abstract::skip(OPJ_OFF_T p_nb_bytes) const {
+	// 这个函数设计是有问题的,当p_nb_bytes为-1时返回会产生歧义，
+	// 但openjpeg中opj_skip_from_file就是这么写的
+	// opj_stream_skip_fn定义的返回也是bool
+	// 所以也只能按其接口要求这么定义
+	auto nc = cursor + p_nb_bytes;
+	if (nc >= start) {
+		cursor = nc;
+		return p_nb_bytes;
+	}
+	return (OPJ_OFF_T)-1;
+}
+
+inline OPJ_UINT64 opj_stream_mem_abstract::stream_length() const {
+	return (OPJ_UINT64)(last - start);
+}
+

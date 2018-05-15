@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <iostream>
+#include <vector>
 #include <cstring>
 #include "jpeg_mem.h"
 #include "raii.h"
@@ -130,11 +131,6 @@ void load_jpeg_mem(const uint8_t *jpeg_data,size_t size,
 	}
 }
 
-void load_jpeg_mem(const std::vector<uint8_t> &jpeg_data,
-		 jpeg_decompress_interface &decompress_instance){
-	load_jpeg_mem(jpeg_data.data(),jpeg_data.size(),decompress_instance);
-}
-
 fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_custom_output_fun &custom) {
 	jpeg_decompress_default default_decompress_instance;
 	default_decompress_instance.custom_output = custom;
@@ -142,19 +138,12 @@ fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_c
 	return std::move(default_decompress_instance.matrix);
 }
 
-fs_image_matrix load_jpeg_mem(const std::vector<uint8_t> &jpeg_data,const jpeg_custom_output_fun &custom){
-	return load_jpeg_mem(jpeg_data.data(),jpeg_data.size(),custom);
-}
 fs_image_matrix load_jpeg_gray_mem(const uint8_t *jpeg_data,size_t size) {
 	static auto custom_output_gray=[](j_common_ptr dinfo) {
 			((j_decompress_ptr)dinfo)->out_color_space = JCS_GRAYSCALE;
 		};
 	return load_jpeg_mem(jpeg_data,size,custom_output_gray);
 }
-fs_image_matrix load_jpeg_gray_mem(const std::vector<uint8_t> &jpeg_data){
-	return load_jpeg_gray_mem(jpeg_data.data(),jpeg_data.size());
-}
-
 /* 图像数据(输出/输入)接口 */
 struct jpeg_io_interface{
 	// 虚函数用于初始化图像数据源或目标
@@ -251,9 +240,7 @@ fs_image_matrix read_jpeg_header_file(std::FILE *const file) {
 fs_image_matrix read_jpeg_header_mem(const uint8_t *jpeg_data,size_t size) {
 	return read_jpeg_header(jpeg_io_mem<false>(jpeg_data,size));
 }
-fs_image_matrix read_jpeg_header_mem(const std::vector<uint8_t> &jpeg_data) {
-	return read_jpeg_header(jpeg_io_mem<false>(jpeg_data));
-}
+
 uint8_t depth(J_COLOR_SPACE color_space){
     switch(color_space){
     case JCS_GRAYSCALE:
@@ -391,4 +378,53 @@ fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
     return gray;
 }
 
+inline jpeg_compress_default::jpeg_compress_default(const fs_image_matrix & matrix) :matrix(matrix), next_line(0) {
+	row_stride = matrix.get_row_stride();
+}
 
+inline void jpeg_compress_default::start_output(jpeg_compress_struct & cinfo) {
+	cinfo.image_width = matrix.width;
+	cinfo.image_height = matrix.height;
+	cinfo.input_components = matrix.channels;
+	cinfo.in_color_space = (J_COLOR_SPACE)matrix.color_space;
+	// buffer只保存一行像素的源数据指针
+	buffer = std::vector<JSAMPROW>(1);
+	next_line = 0;
+}
+
+inline void jpeg_compress_default::get_pixel_rows(JDIMENSION num_scanlines) {
+	// buffer指向当前行像素数据的地址
+	buffer[0] = const_cast<JSAMPROW>(matrix.pixels) + (next_line++)*row_stride*matrix.channels;
+}
+
+inline jpeg_decompress_default::jpeg_decompress_default(uint8_t align) :next_line(0), row_stride(0) {
+	matrix.align = align;
+}
+
+inline jpeg_decompress_default::jpeg_decompress_default() : jpeg_decompress_default(0) {}
+
+inline void jpeg_decompress_default::start_output(const jpeg_decompress_struct & dinfo) {
+	// 填充图像基本信息结构
+	auto b = fs_make_matrix(&matrix,
+		dinfo.output_width,
+		dinfo.output_height,
+		dinfo.output_components,
+		(FS_COLOR_SPACE)dinfo.out_color_space,
+		0,
+		nullptr);
+	if (!b) {
+		throw jpeg_mem_exception("fail to fs_make_matrix");
+	}
+	row_stride = matrix.get_row_stride();
+
+	// buffer只保存一行像素的目标数据指针
+	buffer = std::vector<JSAMPROW>(1);
+	next_line = 0;
+	// 初始化buffer指向第一像素存储地址
+	buffer[next_line] = matrix.pixels;
+}
+
+inline void jpeg_decompress_default::put_pixel_rows(JDIMENSION num_scanlines) {
+	// buffer指向下一行要像素存储地址
+	buffer[0] = matrix.pixels + (++next_line)*row_stride*matrix.channels;
+}

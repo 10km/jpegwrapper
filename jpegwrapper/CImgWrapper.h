@@ -237,9 +237,7 @@ public:
 		}
 		return *this;
 	}
-	const CImgWrapper<T>& load_mem_j2k(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format){
-		return load_mem_j2k(jpeg_data.data(),jpeg_data.size(),format);
-	}
+
 	const opj_stream_mem_output save_mem_j2k(
 					const unsigned int quality = 100,
 					OPJ_CODEC_FORMAT format=OPJ_CODEC_JP2

@@ -13,11 +13,8 @@
 #include <utility>
 #include <cstring>
 #include "openjpeg.h"
-#include "raii.h"
 #include "image_matrix_types.h"
-using namespace std;
 
-#define DEFAULT_MEM_STREAM_INIT_SIZE (1024*16)
 /* openjpeg编码解码异常类 */
 class opj_exception:public std::logic_error{
 public:
@@ -68,85 +65,26 @@ public:
 	virtual uint8_t* stream_data()const=0;
 	virtual OPJ_BOOL is_read_stream()const=0;
 	virtual OPJ_SIZE_T read (void * p_buffer, OPJ_SIZE_T p_nb_bytes)const=0;
-	virtual OPJ_BOOL seek (OPJ_OFF_T p_nb_bytes)const{
-		if(p_nb_bytes>=0){
-			cursor=start+p_nb_bytes;
-			return OPJ_TRUE;
-		}
-		return OPJ_FALSE;
-	}
-	virtual OPJ_OFF_T skip (OPJ_OFF_T p_nb_bytes)const{
-		// 这个函数设计是有问题的,当p_nb_bytes为-1时返回会产生歧义，
-		// 但openjpeg中opj_skip_from_file就是这么写的
-		// opj_stream_skip_fn定义的返回也是bool
-		// 所以也只能按其接口要求这么定义
-		auto nc=cursor+p_nb_bytes;
-		if(nc>=start){
-			cursor=nc;
-			return p_nb_bytes;
-		}
-		return (OPJ_OFF_T)-1;
-	}
-	virtual OPJ_UINT64 stream_length()const{
-		return (OPJ_UINT64)(last-start);
-	}
-	virtual void close(){}
+	virtual OPJ_BOOL seek(OPJ_OFF_T p_nb_bytes)const;
+	virtual OPJ_OFF_T skip(OPJ_OFF_T p_nb_bytes)const;
+	virtual OPJ_UINT64 stream_length()const;
+	virtual void close() {}
 	virtual ~opj_stream_mem_abstract()=default;
 };
 /**
 memory output stream
 */
-class opj_stream_mem_output:public opj_stream_mem_abstract,private vector<uint8_t>{
+class opj_stream_mem_output:public opj_stream_mem_abstract,private std::vector<uint8_t>{
 	/** pointer to the end of the vector */
 	uint8_t *end;
-	using base=vector<uint8_t>;
+	using base=std::vector<uint8_t>;
 public:
-	opj_stream_mem_output():opj_stream_mem_output(DEFAULT_MEM_STREAM_INIT_SIZE){}
-	opj_stream_mem_output(size_t init_capacity):base(init_capacity){
-		start=stream_data();
-		end=stream_data()+size();
-		cursor=stream_data();
-		last=stream_data();
-	}
-	virtual OPJ_SIZE_T read (void * p_buffer, OPJ_SIZE_T p_nb_bytes)const{
-		// output stream不能读取
-		return 0;
-	}
-	virtual OPJ_SIZE_T write (void * p_buffer, OPJ_SIZE_T p_nb_bytes){
-		auto left=(OPJ_SIZE_T)(end-cursor);
-		if(p_nb_bytes>left){
-			// 容量不足时先扩充(至少扩充1倍)
-			auto off_cur=cursor-start;
-			auto off_last=last-start;
-			try{
-				base::resize(base::size()+max(p_nb_bytes-left,(OPJ_SIZE_T)base::size()));
-			}catch(...){
-				// 处理resize失败抛出的异常
-#ifndef NDEBUG
-				cerr<<"exception on call vector::resize"<<endl;
-#endif
-				return 0;
-			}
-			start=stream_data();
-			end=start+base::size();
-			last=start+off_last;
-			cursor=start+off_cur;
-		}
-		memcpy(cursor,p_buffer,p_nb_bytes);
-		auto old_cursor=cursor;
-		cursor+=p_nb_bytes;
-		if(cursor>last){
-			if(old_cursor>last){
-				memset(last,0,old_cursor-last);
-			}
-			last=cursor;
-		}
-		return p_nb_bytes;
-	}
-	virtual uint8_t* stream_data()const{
-		return const_cast<uint8_t*>(base::data());
-	}
-	virtual OPJ_BOOL is_read_stream()const{return 0;}
+	opj_stream_mem_output();
+	opj_stream_mem_output(size_t init_capacity);
+	virtual OPJ_SIZE_T read(void * p_buffer, OPJ_SIZE_T p_nb_bytes)const;
+	virtual OPJ_SIZE_T write(void * p_buffer, OPJ_SIZE_T p_nb_bytes);
+	virtual uint8_t* stream_data()const;
+	virtual OPJ_BOOL is_read_stream()const;
 };
 
 /**
@@ -157,31 +95,10 @@ class opj_stream_mem_input:public opj_stream_mem_abstract{
 	const uint8_t* _data;
 	const size_t size;
 public:
-	opj_stream_mem_input(const void * data,size_t size):_data(reinterpret_cast<const uint8_t*>(data)),size(size){
-		if(nullptr==data)
-			throw opj_stream_exception("input data is null");
-		start=const_cast<uint8_t*>(_data);
-		cursor=start;
-		last=start+size;
-	}
-	virtual OPJ_SIZE_T read (void * p_buffer, OPJ_SIZE_T p_nb_bytes)const{
-		if(last>cursor){
-			auto len=min((OPJ_SIZE_T)(last-cursor),p_nb_bytes);
-			if(len){
-				memcpy(p_buffer,cursor,len);
-				cursor+=len;
-				return len;
-			}
-		}
-		return (OPJ_SIZE_T)-1;
-	}
-	virtual OPJ_SIZE_T write (void * p_buffer, OPJ_SIZE_T p_nb_bytes){
-		// input stream不能写入
-		return 0;
-	}
-	virtual uint8_t* stream_data()const{
-		return const_cast<uint8_t*>(_data);
-	}
+	opj_stream_mem_input(const void * data, size_t size);
+	virtual OPJ_SIZE_T read(void * p_buffer, OPJ_SIZE_T p_nb_bytes)const;
+	virtual OPJ_SIZE_T write(void * p_buffer, OPJ_SIZE_T p_nb_bytes);
+	virtual uint8_t* stream_data()const;
 	virtual OPJ_BOOL is_read_stream()const{return 1;}
 };
 
@@ -206,5 +123,4 @@ opj_image_t* load_j2k(opj_stream_t* l_stream,opj_dparameters_t& parameters);
 opj_image_t* load_j2k(opj_stream_interface& src, opj_dparameters_t& parameters);
 opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format);
 fs_image_matrix load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format);
-fs_image_matrix load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format);
 #endif /* FACEIMAGE_CIMGWRAPPER_J2K_MEM_H_ */

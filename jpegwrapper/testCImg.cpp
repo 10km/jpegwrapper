@@ -32,7 +32,7 @@ int main()
 		//CImgWrapper<unsigned char> image_jpg(input_jpg_file);
 		CImgWrapper<unsigned char> image_jpg;
 		std::vector<uint8_t> jpeg_data=gdface::load_binary_file(input_jpg_file);
-		auto matrix=read_jpeg_header_mem(jpeg_data);
+		auto matrix=read_jpeg_header_mem(jpeg_data.data(), jpeg_data.size());
 
 		//auto matrix=read_jpeg_header_file(input_jpg_file);
 		cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<endl;
@@ -41,7 +41,7 @@ int main()
 				[](j_common_ptr cinfo){
 					((j_decompress_ptr)cinfo)->out_color_space=JCS_GRAYSCALE;
 			});
-		auto mat=load_jpeg_mem(jpeg_data,[](j_common_ptr cinfo) {
+		auto mat=load_jpeg_mem(jpeg_data.data(), jpeg_data.size(),[](j_common_ptr cinfo) {
 			//((j_decompress_ptr)cinfo)->out_color_space = JCS_GRAYSCALE;
 			//((j_decompress_ptr)cinfo)->scale_num=1;
 			//((j_decompress_ptr)cinfo)->scale_denom=2;
@@ -92,10 +92,10 @@ int main()
 		});
 
 		auto j2k_data=gdface::load_binary_file(output4_jpg_file);
-		image_jpg.load_mem_j2k(j2k_data,OPJ_CODEC_JP2);
+		image_jpg.load_mem_j2k(j2k_data.data(), j2k_data.size(),OPJ_CODEC_JP2);
 		image_jpg.draw_text(100,100,"jpeg2000 test",purple);
 		image_jpg.display(output4_jpg_file);
-		auto j2k_mat = load_j2k_mem(j2k_data, OPJ_CODEC_JP2);
+		auto j2k_mat = load_j2k_mem(j2k_data.data(), j2k_data.size(), OPJ_CODEC_JP2);
 		cimg_library::image_matrix_display(j2k_mat, "test load_j2k_mem display", true);
 
 	}catch (exception &e){
