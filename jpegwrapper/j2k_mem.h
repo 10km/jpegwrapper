@@ -14,7 +14,7 @@
 #include <cstring>
 #include "openjpeg.h"
 #include "raii.h"
-#include "jpeg_mem.h"
+#include "image_matrix_types.h"
 using namespace std;
 
 #define DEFAULT_MEM_STREAM_INIT_SIZE (1024*16)
@@ -196,7 +196,7 @@ opj_stream_t* opj_stream_create_si(opj_stream_interface& stream, OPJ_SIZE_T p_si
 opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream);
 
 OPJ_COLOR_SPACE jpeglib_to_opj_color_space(int color_space);
-J_COLOR_SPACE opj_to_jpeglib_color_space(int color_space);
+FS_COLOR_SPACE opj_to_jpeglib_color_space(int color_space);
 opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cparameters_t* parameters);
 fs_image_matrix create_matrix_from_opj_image(opj_image_t* image);
 void save_j2k(opj_image_t* image, opj_cparameters_t *parameters ,opj_stream_interface& dest);

@@ -106,7 +106,7 @@ opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cpa
 	auto row_stride=fs_get_row_stride(matrix);
 	// 将fs_image_matrix中按像素连续存储的通道数据依照opj_image_t的格式拆开到不同的comps中
 	for (y = 0; y <matrix.height; ++y) {
-		scanline = const_cast<uint8_t*>(matrix.pixels.data())+ matrix.channels * row_stride * y;
+		scanline = const_cast<uint8_t*>(matrix.pixels)+ matrix.channels * row_stride * y;
 		for (x = 0; x <matrix.width ; ++x) {
 			pixel = scanline+matrix.channels * x;
 			for (ch = 0; ch < matrix.channels; ++ch) {
@@ -122,37 +122,36 @@ opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cpa
  */
 fs_image_matrix create_matrix_from_opj_image(opj_image_t* image) {
 	throw_if_null(image);
-	fs_image_matrix matrix;
 	throw_if_msg(0 == image->numcomps, "image->numcomps must >0");
-	matrix.width = image->comps[0].w;
-	matrix.height = image->comps[0].h;
 	// 检查参数合法性
-	if (image->numcomps > 1)
+	if (image->numcomps > 1) {
+		auto w0 = image->comps[0].w;
+		auto h0 = image->comps[0].h;
 		for (auto i = image->numcomps - 1; i > 0; --i) {
-			throw_except_if_msg(opj_exception,matrix.width != image->comps[i].w || matrix.height != image->comps[i].h||image->comps[i].prec>8||image->comps[i].bpp>8,
-					"each components has different size");
+			throw_except_if_msg(opj_exception, w0 != image->comps[i].w || h0 != image->comps[i].h || image->comps[i].prec>8 || image->comps[i].bpp>8,
+				"each components has different size");
 		}
-
-	matrix.channels = (uint8_t) (image->numcomps);
-	matrix.color_space = (FS_COLOR_SPACE)opj_to_jpeglib_color_space(image->color_space);
-	matrix.align = 0;
-	auto row_stride = fs_get_row_stride(matrix);
-	// 为fs_image_matrix分配图像存储空间，失败则抛出opj_exception
-	try{
-		matrix.pixels = std::vector<uint8_t>(row_stride * matrix.channels * matrix.height);
-	}catch(exception &e){
-		throw opj_exception(ERROR_STR(e.what()));
-	}catch(...){
-		throw opj_exception(ERROR_STR("fail to constructe std::vector"));
 	}
+	fs_image_matrix matrix;
+	auto b = fs_make_matrix(&matrix,
+		image->comps[0].w,
+		image->comps[0].h,
+		(uint8_t)(image->numcomps),
+		(FS_COLOR_SPACE)opj_to_jpeglib_color_space(image->color_space),
+		0, nullptr);
+	if (!b) {
+		throw opj_exception("fail to fs_make_matrix");
+	}
+	auto row_stride = fs_get_row_stride(matrix);
+
 	uint32_t index = 0;
 	uint8_t* scanline,*pixel;
 	decltype(matrix.height) y;
 	decltype(matrix.width) x;
 	decltype(matrix.channels) ch;
 	for ( y = 0; y < matrix.height; ++y ) {
-		scanline = matrix.pixels.data()+ matrix.channels * row_stride * y;
-		for ( x = 0; x < matrix.height; ++x ) {
+		scanline = matrix.pixels+ matrix.channels * row_stride * y;
+		for ( x = 0; x < matrix.width; ++x ) {
 			pixel = scanline+matrix.channels * x;
 			for (ch = 0; ch < matrix.channels; ++ch) {
 				pixel[ch] = (uint8_t) (image->comps[ch].data[index]);
@@ -248,33 +247,33 @@ opj_stream_mem_output save_j2k_mem(const fs_image_matrix& matrix, const unsigned
 
 OPJ_COLOR_SPACE jpeglib_to_opj_color_space(int color_space) {
 	switch (color_space) {
-	case JCS_RGB:
+	case FSC_RGB:
 		return OPJ_CLRSPC_SRGB;
-	case JCS_GRAYSCALE:
+	case FSC_GRAYSCALE:
 		return OPJ_CLRSPC_GRAY;
-	case JCS_CMYK:
+	case FSC_CMYK:
 		return OPJ_CLRSPC_CMYK;
-	case JCS_YCbCr:
+	case FSC_YCbCr:
 		return OPJ_CLRSPC_SYCC;
-	case JCS_YCCK:
+	case FSC_YCCK:
 		return OPJ_CLRSPC_EYCC;
 	default:
 		throw opj_exception("fail to convert J_COLOR_SPACE to OPJ_COLOR_SPACE");
 	}
 }
 
-J_COLOR_SPACE opj_to_jpeglib_color_space(int color_space) {
+FS_COLOR_SPACE opj_to_jpeglib_color_space(int color_space) {
 	switch (color_space) {
 	case OPJ_CLRSPC_SRGB:
-		return JCS_RGB;
+		return FSC_RGB;
 	case OPJ_CLRSPC_GRAY:
-		return JCS_GRAYSCALE;
+		return FSC_GRAYSCALE;
 	case OPJ_CLRSPC_CMYK:
-		return JCS_CMYK;
+		return FSC_CMYK;
 	case OPJ_CLRSPC_SYCC:
-		return JCS_YCbCr;
+		return FSC_YCbCr;
 	case OPJ_CLRSPC_EYCC:
-		return JCS_YCCK;
+		return FSC_YCCK;
 	default:
 		throw opj_exception("fail to convert OPJ_COLOR_SPACE to J_COLOR_SPACE");
 	}

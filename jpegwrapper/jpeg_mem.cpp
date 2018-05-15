@@ -336,14 +336,17 @@ void convert(const uint8_t*src_ptr, uint8_t*dst_ptr,size_t size,size_t src_step)
  * 将彩色图像转为灰度图像
 */
 fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
-	if(JCS_GRAYSCALE==matrix.color_space)return matrix;
+	if (FSC_GRAYSCALE == matrix.color_space){ 
+		// 调用复制构造函数
+		return matrix;
+	}
 	auto row_stride=fs_get_row_stride(matrix);
 	auto new_size=row_stride*matrix.height;
-    fs_image_matrix gray{matrix.width,matrix.height,1,(FS_COLOR_SPACE)JCS_GRAYSCALE,matrix.align,std::vector<uint8_t>(new_size)};
+    fs_image_matrix gray{matrix.width,matrix.height,1,FSC_GRAYSCALE,matrix.align,nullptr};
     auto dimbuf=depth((J_COLOR_SPACE)matrix.color_space);
-    auto src_ptr=matrix.pixels.data();
-    auto dst_ptr=gray.pixels.data();
-    switch(matrix.color_space){
+    auto src_ptr=matrix.pixels;
+    auto dst_ptr=gray.pixels;
+    switch((J_COLOR_SPACE)matrix.color_space){
     case JCS_RGB:
     	convert<JCS_RGB>(src_ptr,dst_ptr,new_size,dimbuf);
     	break;

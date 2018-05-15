@@ -13,66 +13,14 @@
 #include <memory>
 #include <vector>
 #include "jpeglib.h"
-//#include "image_matrix_types.h"
-typedef enum {
-	FSC_UNKNOWN,            /* error/unspecified */
-	FSC_GRAYSCALE,          /* monochrome */
-	FSC_RGB,                /* red/green/blue as specified by the RGB_RED,
-							RGB_GREEN, RGB_BLUE, and RGB_PIXELSIZE macros */
-	FSC_YCbCr,              /* Y/Cb/Cr (also known as YUV) */
-	FSC_CMYK,               /* C/M/Y/K */
-	FSC_YCCK,               /* Y/Cb/Cr/K */
-	FSC_EXT_RGB,            /* red/green/blue */
-	FSC_EXT_RGBX,           /* red/green/blue/x */
-	FSC_EXT_BGR,            /* blue/green/red */
-	FSC_EXT_BGRX,           /* blue/green/red/x */
-	FSC_EXT_XBGR,           /* x/blue/green/red */
-	FSC_EXT_XRGB,           /* x/red/green/blue */
-							/* When out_color_space it set to FSC_EXT_RGBX, FSC_EXT_BGRX, FSC_EXT_XBGR,
-							or FSC_EXT_XRGB during decompression, the X byte is undefined, and in
-							order to ensure the best performance, libjpeg-turbo can set that byte to
-							whatever value it wishes.  Use the following colorspace constants to
-							ensure that the X byte is set to 0xFF, so that it can be interpreted as an
-							opaque alpha channel. */
-	FSC_EXT_RGBA,           /* red/green/blue/alpha */
-	FSC_EXT_BGRA,           /* blue/green/red/alpha */
-	FSC_EXT_ABGR,           /* alpha/blue/green/red */
-	FSC_EXT_ARGB,           /* alpha/red/green/blue */
-	FSC_RGB565              /* 5-bit red/6-bit green/5-bit blue */
-} FS_COLOR_SPACE;
-/* 图像矩阵基本参数 */
-typedef struct _fs_image_matrix{
-        uint32_t		width;					// 图像宽度
-        uint32_t		height;					// 图像高度
-        uint8_t		channels;				// 通道数
-		FS_COLOR_SPACE color_space; // 图像数据的色彩空间
-        uint8_t		align;	// 内存对齐方式 0为不对齐，>0为以2的n次幂对齐
-        std::vector <uint8_t> pixels; // 图像数据
-}fs_image_matrix,*fs_image_matrix_ptr;
-/*
- * 获取矩阵行对齐宽度(像素)
- * */
-inline uint32_t fs_get_row_stride(const fs_image_matrix&matrix){
-	// align只取低4位
-	uint32_t m=(1U << (matrix.align&0x0f))-1;
-	return uint32_t((matrix.width+m)&(~m));
-}
-// 将fs_image_matrix中按像素连续存储的图像数据改为按通道存储
-inline void fs_fill_channels(const fs_image_matrix&img,uint8_t *dst_ptr) {
-	auto row_stride = fs_get_row_stride(img);
-	if (nullptr == dst_ptr) {
-		return;
-	}
-	for (uint8_t ch = 0; ch < img.channels; ++ch, dst_ptr += img.width*img.height) {
-		auto dst_offset = dst_ptr;
-		auto src_ptr = img.pixels.data();
-		for (unsigned int y = 0; y < img.height; ++y, src_ptr += row_stride*img.channels, dst_offset += img.width) {
-			for (unsigned int x = 0; x<img.width; ++x) {
-				dst_offset[x] = src_ptr[x*img.channels + ch];
-			}
-		}
-	}
-}
+#include "image_matrix_types.h"
+
+/* jpeg图像处理异常类 */
+class jpeg_mem_exception :public std::logic_error {
+public:
+	// 继承基类构造函数
+	using std::logic_error::logic_error;
+};
 /* 处理压缩解压缩后内存数据的回调函数 */
 using mem_finish_output_fun=std::function<void(const uint8_t*,unsigned long)>;
 /* 定制压缩解压缩参数 */
@@ -109,7 +57,7 @@ struct jpeg_compress_default:jpeg_compress_interface{
 	}
 	virtual void get_pixel_rows(JDIMENSION num_scanlines){
 		// buffer指向当前行像素数据的地址
-		buffer[0]=const_cast<JSAMPROW>(matrix.pixels.data())+(next_line++)*row_stride*matrix.channels;
+		buffer[0]=const_cast<JSAMPROW>(matrix.pixels)+(next_line++)*row_stride*matrix.channels;
 	}
 };
 /* 图像解压缩接口类 */
@@ -139,32 +87,38 @@ struct jpeg_decompress_default:public jpeg_decompress_interface{
 
 	virtual void start_output(const jpeg_decompress_struct&dinfo){
 		// 填充图像基本信息结构
-		matrix.width=dinfo.output_width;
-		matrix.height=dinfo.output_height;
-		matrix.color_space=(FS_COLOR_SPACE)dinfo.out_color_space;
-		matrix.channels=dinfo.output_components;
-		row_stride=fs_get_row_stride(matrix);
-		// 分配像素数据存储区
-		matrix.pixels=std::vector<uint8_t>(row_stride*matrix.height*matrix.channels);
+		//matrix.width=dinfo.output_width;
+		//matrix.height=dinfo.output_height;
+		//matrix.color_space=(FS_COLOR_SPACE)dinfo.out_color_space;
+		//matrix.channels=dinfo.output_components;
+		//row_stride=fs_get_row_stride(matrix);
+		//// 分配像素数据存储区
+		//matrix.pixels=std::vector<uint8_t>(row_stride*matrix.height*matrix.channels);
+		auto b= fs_make_matrix(&matrix,
+			dinfo.output_width,
+			dinfo.output_height,
+			dinfo.output_components,
+			(FS_COLOR_SPACE)dinfo.out_color_space, 
+			0,
+			nullptr);
+		if (!b) {
+			throw jpeg_mem_exception("fail to fs_make_matrix");
+		}
+		row_stride = fs_get_row_stride(matrix);
+
 		// buffer只保存一行像素的目标数据指针
 		buffer=std::vector<JSAMPROW>(1);
 		next_line=0;
 		// 初始化buffer指向第一像素存储地址
-		buffer[next_line]=matrix.pixels.data();
+		buffer[next_line]=matrix.pixels;
 	}
 	virtual void put_pixel_rows(JDIMENSION num_scanlines){
 		// buffer指向下一行要像素存储地址
-		buffer[0]=matrix.pixels.data()+(++next_line)*row_stride*matrix.channels;
+		buffer[0]=matrix.pixels+(++next_line)*row_stride*matrix.channels;
 	}
 	virtual ~jpeg_decompress_default()=default;
 };
 
-/* jpeg图像处理异常类 */
-class jpeg_mem_exception:public std::logic_error{
-public:
-	// 继承基类构造函数
-	using std::logic_error::logic_error;
-};
 
 void save_jpeg_mem(jpeg_compress_interface& compress_instance,
 									const mem_finish_output_fun& finishe_output,
