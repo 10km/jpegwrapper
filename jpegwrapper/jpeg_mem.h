@@ -13,12 +13,13 @@
 #include <memory>
 #include <vector>
 #include "jpeglib.h"
+#include "image_matrix_types.h"
 /* 图像矩阵基本参数 */
 typedef struct _image_matrix_param{
         uint32_t		width;					// 图像宽度
         uint32_t		height;					// 图像高度
         uint8_t		channels;				// 通道数
-        J_COLOR_SPACE color_space; // 图像数据的色彩空间
+		FS_COLOR_SPACE color_space; // 图像数据的色彩空间
         uint8_t		align;	// 内存对齐方式 0为不对齐，>0为以2的n次幂对齐
         std::vector <uint8_t> pixels; // 图像数据
 }image_matrix_param,*image_matrix_param_ptr;
@@ -75,7 +76,7 @@ struct jpeg_compress_default:jpeg_compress_interface{
 		cinfo.image_width = matrix.width;
 		cinfo.image_height = matrix.height;
 		cinfo.input_components = matrix.channels;
-		cinfo.in_color_space = matrix.color_space;
+		cinfo.in_color_space = (J_COLOR_SPACE)matrix.color_space;
 		// buffer只保存一行像素的源数据指针
 		buffer=std::vector<JSAMPROW>(1);
 		next_line=0;
@@ -114,7 +115,7 @@ struct jpeg_decompress_default:public jpeg_decompress_interface{
 		// 填充图像基本信息结构
 		matrix.width=dinfo.output_width;
 		matrix.height=dinfo.output_height;
-		matrix.color_space=dinfo.out_color_space;
+		matrix.color_space=(FS_COLOR_SPACE)dinfo.out_color_space;
 		matrix.channels=dinfo.output_components;
 		row_stride=get_row_stride(matrix);
 		// 分配像素数据存储区

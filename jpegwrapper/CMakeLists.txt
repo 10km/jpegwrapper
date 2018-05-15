@@ -35,6 +35,7 @@ option(AUTO_BUILD_TEST "build test program" OFF)
 set(SOURCE_FILES
 	jpeg_mem.cpp 
 	j2k_mem.cpp
+	image_matrix_types.cpp
 	)
 file(GLOB _public_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 

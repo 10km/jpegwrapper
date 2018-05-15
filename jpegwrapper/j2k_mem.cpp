@@ -134,7 +134,7 @@ image_matrix_param create_matrix_from_opj_image(opj_image_t* image) {
 		}
 
 	matrix.channels = (uint8_t) (image->numcomps);
-	matrix.color_space = opj_to_jpeglib_color_space(image->color_space);
+	matrix.color_space = (FS_COLOR_SPACE)opj_to_jpeglib_color_space(image->color_space);
 	matrix.align = 0;
 	auto row_stride = get_row_stride(matrix);
 	// 为image_matrix_param分配图像存储空间，失败则抛出opj_exception

@@ -237,7 +237,7 @@ image_matrix_param read_jpeg_header(const jpeg_io_interface &src) {
 	// 填充图像基本信息结构
 	matrix.width=dinfo.image_width;
 	matrix.height=dinfo.image_height;
-	matrix.color_space=dinfo.jpeg_color_space;
+	matrix.color_space=(FS_COLOR_SPACE)dinfo.jpeg_color_space;
 	matrix.channels=dinfo.num_components;
 	//std::cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<std::endl;
 	return std::move(matrix);
@@ -339,8 +339,8 @@ image_matrix_param to_gray_image_matrix(const image_matrix_param&matrix){
 	if(JCS_GRAYSCALE==matrix.color_space)return matrix;
 	auto row_stride=get_row_stride(matrix);
 	auto new_size=row_stride*matrix.height;
-    image_matrix_param gray{matrix.width,matrix.height,1,JCS_GRAYSCALE,matrix.align,std::vector<uint8_t>(new_size)};
-    auto dimbuf=depth(matrix.color_space);
+    image_matrix_param gray{matrix.width,matrix.height,1,(FS_COLOR_SPACE)JCS_GRAYSCALE,matrix.align,std::vector<uint8_t>(new_size)};
+    auto dimbuf=depth((J_COLOR_SPACE)matrix.color_space);
     auto src_ptr=matrix.pixels.data();
     auto dst_ptr=gray.pixels.data();
     switch(matrix.color_space){
