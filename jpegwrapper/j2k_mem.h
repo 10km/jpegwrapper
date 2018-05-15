@@ -197,14 +197,14 @@ opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream);
 
 OPJ_COLOR_SPACE jpeglib_to_opj_color_space(int color_space);
 J_COLOR_SPACE opj_to_jpeglib_color_space(int color_space);
-opj_image_t* opj_image_create_from_matrix(const image_matrix_param& matrix, opj_cparameters_t* parameters);
-image_matrix_param create_matrix_from_opj_image(opj_image_t* image);
+opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cparameters_t* parameters);
+fs_image_matrix create_matrix_from_opj_image(opj_image_t* image);
 void save_j2k(opj_image_t* image, opj_cparameters_t *parameters ,opj_stream_interface& dest);
-void save_j2k(const image_matrix_param& matrix, opj_stream_interface& dest, const unsigned int quality=100,OPJ_CODEC_FORMAT format = OPJ_CODEC_JP2);
-opj_stream_mem_output save_j2k_mem(const image_matrix_param& matrix, const unsigned int quality=100,OPJ_CODEC_FORMAT format = OPJ_CODEC_JP2);
+void save_j2k(const fs_image_matrix& matrix, opj_stream_interface& dest, const unsigned int quality=100,OPJ_CODEC_FORMAT format = OPJ_CODEC_JP2);
+opj_stream_mem_output save_j2k_mem(const fs_image_matrix& matrix, const unsigned int quality=100,OPJ_CODEC_FORMAT format = OPJ_CODEC_JP2);
 opj_image_t* load_j2k(opj_stream_t* l_stream,opj_dparameters_t& parameters);
 opj_image_t* load_j2k(opj_stream_interface& src, opj_dparameters_t& parameters);
 opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format);
-image_matrix_param load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format);
-image_matrix_param load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format);
+fs_image_matrix load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format);
+fs_image_matrix load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format);
 #endif /* FACEIMAGE_CIMGWRAPPER_J2K_MEM_H_ */

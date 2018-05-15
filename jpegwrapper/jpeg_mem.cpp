@@ -66,7 +66,7 @@ void save_jpeg_mem(jpeg_compress_interface& compress_instance,
 	jpeg_compress_finished=true;
 }
 
-void save_jpeg_mem(const image_matrix_param &matrix,
+void save_jpeg_mem(const fs_image_matrix &matrix,
 									const mem_finish_output_fun& finish_output,
 									const unsigned int quality,
 									const jpeg_custom_output_fun &custom
@@ -75,7 +75,7 @@ void save_jpeg_mem(const image_matrix_param &matrix,
 	default_compress_instance.custom_output= custom;
 	save_jpeg_mem(default_compress_instance,	finish_output);
 }
-void save_jpeg_gray_mem(const image_matrix_param &matrix,
+void save_jpeg_gray_mem(const fs_image_matrix &matrix,
 									const mem_finish_output_fun& finish_output,
 									const unsigned int quality
 									){
@@ -135,23 +135,23 @@ void load_jpeg_mem(const std::vector<uint8_t> &jpeg_data,
 	load_jpeg_mem(jpeg_data.data(),jpeg_data.size(),decompress_instance);
 }
 
-image_matrix_param load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_custom_output_fun &custom) {
+fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_custom_output_fun &custom) {
 	jpeg_decompress_default default_decompress_instance;
 	default_decompress_instance.custom_output = custom;
 	load_jpeg_mem(jpeg_data,size,default_decompress_instance);
 	return std::move(default_decompress_instance.matrix);
 }
 
-image_matrix_param load_jpeg_mem(const std::vector<uint8_t> &jpeg_data,const jpeg_custom_output_fun &custom){
+fs_image_matrix load_jpeg_mem(const std::vector<uint8_t> &jpeg_data,const jpeg_custom_output_fun &custom){
 	return load_jpeg_mem(jpeg_data.data(),jpeg_data.size(),custom);
 }
-image_matrix_param load_jpeg_gray_mem(const uint8_t *jpeg_data,size_t size) {
+fs_image_matrix load_jpeg_gray_mem(const uint8_t *jpeg_data,size_t size) {
 	static auto custom_output_gray=[](j_common_ptr dinfo) {
 			((j_decompress_ptr)dinfo)->out_color_space = JCS_GRAYSCALE;
 		};
 	return load_jpeg_mem(jpeg_data,size,custom_output_gray);
 }
-image_matrix_param load_jpeg_gray_mem(const std::vector<uint8_t> &jpeg_data){
+fs_image_matrix load_jpeg_gray_mem(const std::vector<uint8_t> &jpeg_data){
 	return load_jpeg_gray_mem(jpeg_data.data(),jpeg_data.size());
 }
 
@@ -215,7 +215,7 @@ private:
 /* (不解压缩)读取jpeg格式的内存数据块的基本信息返回image_matrix_pram对象
  * 如果数据为空或读取数据出错抛出 jpeg_mem_exception
  */
-image_matrix_param read_jpeg_header(const jpeg_io_interface &src) {
+fs_image_matrix read_jpeg_header(const jpeg_io_interface &src) {
 	// 定义一个压缩对象
 	jpeg_decompress_struct  dinfo;
 	// 用于错误信息
@@ -233,7 +233,7 @@ image_matrix_param read_jpeg_header(const jpeg_io_interface &src) {
 	jpeg_create_decompress(&dinfo);
 	src.open((j_common_ptr)&dinfo);
 	(void) jpeg_read_header(&dinfo, true);
-	image_matrix_param matrix;
+	fs_image_matrix matrix;
 	// 填充图像基本信息结构
 	matrix.width=dinfo.image_width;
 	matrix.height=dinfo.image_height;
@@ -242,16 +242,16 @@ image_matrix_param read_jpeg_header(const jpeg_io_interface &src) {
 	//std::cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<std::endl;
 	return std::move(matrix);
 }
-image_matrix_param read_jpeg_header_file(const char *const filename) {
+fs_image_matrix read_jpeg_header_file(const char *const filename) {
 	return read_jpeg_header(jpeg_io_file<false>(filename));
 }
-image_matrix_param read_jpeg_header_file(std::FILE *const file) {
+fs_image_matrix read_jpeg_header_file(std::FILE *const file) {
 	return read_jpeg_header(jpeg_io_file<false>(file));
 }
-image_matrix_param read_jpeg_header_mem(const uint8_t *jpeg_data,size_t size) {
+fs_image_matrix read_jpeg_header_mem(const uint8_t *jpeg_data,size_t size) {
 	return read_jpeg_header(jpeg_io_mem<false>(jpeg_data,size));
 }
-image_matrix_param read_jpeg_header_mem(const std::vector<uint8_t> &jpeg_data) {
+fs_image_matrix read_jpeg_header_mem(const std::vector<uint8_t> &jpeg_data) {
 	return read_jpeg_header(jpeg_io_mem<false>(jpeg_data));
 }
 uint8_t depth(J_COLOR_SPACE color_space){
@@ -335,11 +335,11 @@ void convert(const uint8_t*src_ptr, uint8_t*dst_ptr,size_t size,size_t src_step)
 /*
  * 将彩色图像转为灰度图像
 */
-image_matrix_param to_gray_image_matrix(const image_matrix_param&matrix){
+fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
 	if(JCS_GRAYSCALE==matrix.color_space)return matrix;
-	auto row_stride=get_row_stride(matrix);
+	auto row_stride=fs_get_row_stride(matrix);
 	auto new_size=row_stride*matrix.height;
-    image_matrix_param gray{matrix.width,matrix.height,1,(FS_COLOR_SPACE)JCS_GRAYSCALE,matrix.align,std::vector<uint8_t>(new_size)};
+    fs_image_matrix gray{matrix.width,matrix.height,1,(FS_COLOR_SPACE)JCS_GRAYSCALE,matrix.align,std::vector<uint8_t>(new_size)};
     auto dimbuf=depth((J_COLOR_SPACE)matrix.color_space);
     auto src_ptr=matrix.pixels.data();
     auto dst_ptr=gray.pixels.data();

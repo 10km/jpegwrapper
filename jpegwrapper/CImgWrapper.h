@@ -333,14 +333,14 @@ private:
 	}
 
 };
-// image_matrix_param转换为CImgWrapper
-CImgWrapper<uint8_t> toCImg(const image_matrix_param&img) {	
+// fs_image_matrix转换为CImgWrapper
+CImgWrapper<uint8_t> toCImg(const fs_image_matrix&img) {	
 	std::vector<uint8_t> tmp(img.width*img.height*img.channels);
-	fill_channels(img, tmp.data());
+	fs_fill_channels(img, tmp.data());
 	return CImgWrapper<uint8_t>(tmp.data(), img.width, img.height, 1, img.channels, false);
 	}
-// 显示一个image_matrix_param对象代表的图像
-void image_matrix_display(const image_matrix_param&img, const std::string& title, const bool display_info, unsigned int *const XYZ = 0,
+// 显示一个fs_image_matrix对象代表的图像
+void image_matrix_display(const fs_image_matrix&img, const std::string& title, const bool display_info, unsigned int *const XYZ = 0,
 	const bool exit_on_anykey = false) {
 	toCImg(img).display(title.empty() ? nullptr : title.data(), display_info, XYZ, exit_on_anykey);
 }

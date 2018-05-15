@@ -68,10 +68,10 @@ OPJ_SIZE_T opj_stream_interface_write(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj
 OPJ_SIZE_T opj_stream_interface_read(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->read(p_buffer, p_nb_bytes);
 }
-/* 从image_matrix_param创建 opj_image_t
+/* 从fs_image_matrix创建 opj_image_t
  * 失败则抛出 opj_exception 异常
  */
-opj_image_t* opj_image_create_from_matrix(const image_matrix_param& matrix, opj_cparameters_t* parameters) {
+opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cparameters_t* parameters) {
 	throw_if_null(parameters);
 	auto subsampling_dx = parameters->subsampling_dx;
 	auto subsampling_dy = parameters->subsampling_dy;
@@ -103,8 +103,8 @@ opj_image_t* opj_image_create_from_matrix(const image_matrix_param& matrix, opj_
 	decltype(matrix.height) y;
 	decltype(matrix.width) x;
 	decltype(matrix.channels) ch;
-	auto row_stride=get_row_stride(matrix);
-	// 将image_matrix_param中按像素连续存储的通道数据依照opj_image_t的格式拆开到不同的comps中
+	auto row_stride=fs_get_row_stride(matrix);
+	// 将fs_image_matrix中按像素连续存储的通道数据依照opj_image_t的格式拆开到不同的comps中
 	for (y = 0; y <matrix.height; ++y) {
 		scanline = const_cast<uint8_t*>(matrix.pixels.data())+ matrix.channels * row_stride * y;
 		for (x = 0; x <matrix.width ; ++x) {
@@ -117,12 +117,12 @@ opj_image_t* opj_image_create_from_matrix(const image_matrix_param& matrix, opj_
 	}
 	return image;
 }
-/* 从opj_image_t 创建 image_matrix_param
+/* 从opj_image_t 创建 fs_image_matrix
  * 失败则抛出 opj_exception 异常
  */
-image_matrix_param create_matrix_from_opj_image(opj_image_t* image) {
+fs_image_matrix create_matrix_from_opj_image(opj_image_t* image) {
 	throw_if_null(image);
-	image_matrix_param matrix;
+	fs_image_matrix matrix;
 	throw_if_msg(0 == image->numcomps, "image->numcomps must >0");
 	matrix.width = image->comps[0].w;
 	matrix.height = image->comps[0].h;
@@ -136,8 +136,8 @@ image_matrix_param create_matrix_from_opj_image(opj_image_t* image) {
 	matrix.channels = (uint8_t) (image->numcomps);
 	matrix.color_space = (FS_COLOR_SPACE)opj_to_jpeglib_color_space(image->color_space);
 	matrix.align = 0;
-	auto row_stride = get_row_stride(matrix);
-	// 为image_matrix_param分配图像存储空间，失败则抛出opj_exception
+	auto row_stride = fs_get_row_stride(matrix);
+	// 为fs_image_matrix分配图像存储空间，失败则抛出opj_exception
 	try{
 		matrix.pixels = std::vector<uint8_t>(row_stride * matrix.channels * matrix.height);
 	}catch(exception &e){
@@ -203,10 +203,10 @@ void save_j2k(opj_image_t* image, opj_cparameters_t *parameters ,opj_stream_inte
 	if (!opj_end_compress(l_codec, l_stream))
 		throw opj_exception("failed to encode image: opj_end_compress");
 }
-// 将一个image_matrix_param数据压缩成jpeg2000格式输出到opj_stream_interface对象
+// 将一个fs_image_matrix数据压缩成jpeg2000格式输出到opj_stream_interface对象
 // 默认压缩质量100
 // 默认压缩格式为OPJ_CODEC_JP2
-void save_j2k(const image_matrix_param& matrix, opj_stream_interface& dest, const unsigned int quality, OPJ_CODEC_FORMAT format) {
+void save_j2k(const fs_image_matrix& matrix, opj_stream_interface& dest, const unsigned int quality, OPJ_CODEC_FORMAT format) {
 	opj_cparameters_t parameters;
 	/* set encoding parameters to default values */
 	opj_set_default_encoder_parameters(&parameters);
@@ -237,10 +237,10 @@ void save_j2k(const image_matrix_param& matrix, opj_stream_interface& dest, cons
 	});
 	save_j2k(*raii_image, &parameters,dest);
 }
-// 将一个image_matrix_param数据压缩成jpeg2000格式输出到内存流对象(opj_stream_mem_output)
+// 将一个fs_image_matrix数据压缩成jpeg2000格式输出到内存流对象(opj_stream_mem_output)
 // 默认压缩质量100
 // 默认压缩格式为OPJ_CODEC_JP2
-opj_stream_mem_output save_j2k_mem(const image_matrix_param& matrix, const unsigned int quality, OPJ_CODEC_FORMAT format) {
+opj_stream_mem_output save_j2k_mem(const fs_image_matrix& matrix, const unsigned int quality, OPJ_CODEC_FORMAT format) {
 	opj_stream_mem_output dest;
 	save_j2k(matrix, dest,quality, format);
 	return std::move(dest);
@@ -363,9 +363,9 @@ opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format) {
 	return load_j2k(src, parameters);
 }
 /* 从jpeg_data和size指定的内存数据中解码指定格式(format)的jpeg2000图像
- * 返回 image_matrix_param对象,出错则抛出opj_exception异常
+ * 返回 fs_image_matrix对象,出错则抛出opj_exception异常
  */
-image_matrix_param load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format) {
+fs_image_matrix load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format) {
 	throw_if_null(jpeg_data)
 	throw_if_msg(0 == size, "jpeg_data is empty")
 	opj_stream_mem_input src(jpeg_data, size);
@@ -378,8 +378,8 @@ image_matrix_param load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC
 	return create_matrix_from_opj_image(*raii_image);
 }
 /* 从jpeg_data指定的内存数据中解码指定格式(format)的jpeg2000图像
- * 返回 image_matrix_param对象,出错则抛出opj_exception异常
+ * 返回 fs_image_matrix对象,出错则抛出opj_exception异常
  */
-image_matrix_param load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format){
+fs_image_matrix load_j2k_mem(const std::vector<uint8_t>&jpeg_data, OPJ_CODEC_FORMAT format){
 	return load_j2k_mem(jpeg_data.data(),jpeg_data.size(),format);
 }
