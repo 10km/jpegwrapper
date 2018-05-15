@@ -2,52 +2,14 @@
 #include <stdexcept>
 #include "image_matrix_types.h"
 
-/*
-* 获取矩阵行对齐宽度(像素)
-* */
-uint32_t fs_get_row_stride(const fs_image_matrix& matrix) {
-	// align只取低4位
-	uint32_t m = (1U << (matrix.align & 0x0f)) - 1;
-	return uint32_t((matrix.width + m)&(~m));
-}
-
-// 根据图像基本参数计算图像矩阵中图像数据所占内存大小(字节),该结果与pixels是否为NULL无关,
-// 可依据此值为图像分配内存
-uint32_t fs_get_matrix_size(const fs_image_matrix& matrix) {
-	auto stride = fs_get_row_stride(matrix);
-	return stride * matrix.height * matrix.channels;
-}
-
-// 将fs_image_matrix中按像素连续存储的图像数据改为按通道存储
-void fs_fill_channels(const fs_image_matrix& matrix, uint8_t * dst_ptr) {
-	auto row_stride = fs_get_row_stride(matrix);
-	if (nullptr == dst_ptr || nullptr == matrix.pixels) {
-		return;
-	}
-	for (uint8_t ch = 0; ch < matrix.channels; ++ch, dst_ptr += matrix.width*matrix.height) {
-		auto dst_offset = dst_ptr;
-		auto src_ptr = matrix.pixels;
-		for (unsigned int y = 0; y < matrix.height; ++y, src_ptr += row_stride*matrix.channels, dst_offset += matrix.width) {
-			for (unsigned int x = 0; x<matrix.width; ++x) {
-				dst_offset[x] = src_ptr[x*matrix.channels + ch];
-			}
-		}
-	}
-}
-
-bool fs_matrix_is_NULL(const fs_image_matrix & matrix)
-{
-	return 0 == matrix.width 
-		&& 0 == matrix.height 
-		&& 0 == matrix.channels;
-}
-
 uint32_t fs_get_row_stride(const fs_image_matrix_ptr matrix)
 {
 	if (nullptr == matrix) {
 		return -1;
 	}
-	return fs_get_row_stride(*matrix);
+	// align只取低4位
+	uint32_t m = (1U << (matrix->align & 0x0f)) - 1;
+	return uint32_t((matrix->width + m)&(~m));
 }
 
 uint32_t fs_get_matrix_size(const fs_image_matrix_ptr matrix)
@@ -55,7 +17,8 @@ uint32_t fs_get_matrix_size(const fs_image_matrix_ptr matrix)
 	if (nullptr == matrix) {
 		return -1;
 	}
-	return fs_get_matrix_size(*matrix);
+	auto stride = fs_get_row_stride(matrix);
+	return stride * matrix->height * matrix->channels;
 }
 
 void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t * dst_ptr)
@@ -63,7 +26,19 @@ void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t * dst_ptr)
 	if (nullptr == matrix) {
 		return ;
 	}
-	fs_fill_channels(*matrix, dst_ptr);
+	auto row_stride = fs_get_row_stride(matrix);
+	if (nullptr == dst_ptr || nullptr == matrix->pixels) {
+		return;
+	}
+	for (uint8_t ch = 0; ch < matrix->channels; ++ch, dst_ptr += matrix->width*matrix->height) {
+		auto dst_offset = dst_ptr;
+		auto src_ptr = matrix->pixels;
+		for (unsigned int y = 0; y < matrix->height; ++y, src_ptr += row_stride*matrix->channels, dst_offset += matrix->width) {
+			for (unsigned int x = 0; x<matrix->width; ++x) {
+				dst_offset[x] = src_ptr[x*matrix->channels + ch];
+			}
+		}
+	}
 }
 
 int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix)
@@ -71,7 +46,9 @@ int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix)
 	if (nullptr == matrix) {
 		return 1;
 	}
-	return fs_matrix_is_NULL(*matrix);
+	return 0 == matrix->width
+		&& 0 == matrix->height
+		&& 0 == matrix->channels;
 }
 
 int fs_make_matrix(fs_image_matrix_ptr matrix, uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels)
@@ -182,19 +159,19 @@ _fs_image_matrix::~_fs_image_matrix() {
 	fs_destruct_matrix(this);
 }
 
-uint32_t _fs_image_matrix::get_matrix_size() {
-	return fs_get_matrix_size(this);
+uint32_t _fs_image_matrix::get_matrix_size() const{
+	return fs_get_matrix_size((fs_image_matrix_ptr)this);
 }
 
-uint32_t _fs_image_matrix::get_row_stride() {
-	return fs_get_row_stride(this);
+uint32_t _fs_image_matrix::get_row_stride()const {
+	return fs_get_row_stride((fs_image_matrix_ptr)this);
 }
 
-bool _fs_image_matrix::is_NULL() {
-	auto b = fs_matrix_is_NULL(this);
+bool _fs_image_matrix::is_NULL()const{
+	auto b = fs_matrix_is_NULL((fs_image_matrix_ptr)this);
 	return b ? true : false;
 }
 
-void _fs_image_matrix::fill_channels(uint8_t * dst_ptr) {
-	fs_fill_channels(this, dst_ptr);
+void _fs_image_matrix::fill_channels(uint8_t * dst_ptr) const{
+	fs_fill_channels((fs_image_matrix_ptr)this, dst_ptr);
 }

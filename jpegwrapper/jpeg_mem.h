@@ -44,7 +44,7 @@ struct jpeg_compress_default:jpeg_compress_interface{
 	// 当前处理的源图像像素行数
 	JDIMENSION next_line;
 	jpeg_compress_default(const fs_image_matrix& matrix):matrix(matrix),next_line(0){
-		row_stride=fs_get_row_stride(matrix);
+		row_stride= matrix.get_row_stride();
 	}
 	virtual void start_output( jpeg_compress_struct&cinfo){
 		cinfo.image_width = matrix.width;
@@ -87,13 +87,6 @@ struct jpeg_decompress_default:public jpeg_decompress_interface{
 
 	virtual void start_output(const jpeg_decompress_struct&dinfo){
 		// 填充图像基本信息结构
-		//matrix.width=dinfo.output_width;
-		//matrix.height=dinfo.output_height;
-		//matrix.color_space=(FS_COLOR_SPACE)dinfo.out_color_space;
-		//matrix.channels=dinfo.output_components;
-		//row_stride=fs_get_row_stride(matrix);
-		//// 分配像素数据存储区
-		//matrix.pixels=std::vector<uint8_t>(row_stride*matrix.height*matrix.channels);
 		auto b= fs_make_matrix(&matrix,
 			dinfo.output_width,
 			dinfo.output_height,
@@ -104,7 +97,7 @@ struct jpeg_decompress_default:public jpeg_decompress_interface{
 		if (!b) {
 			throw jpeg_mem_exception("fail to fs_make_matrix");
 		}
-		row_stride = fs_get_row_stride(matrix);
+		row_stride = matrix.get_row_stride();
 
 		// buffer只保存一行像素的目标数据指针
 		buffer=std::vector<JSAMPROW>(1);

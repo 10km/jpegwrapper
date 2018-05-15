@@ -47,22 +47,14 @@ typedef struct _fs_image_matrix {
 	// 移动构造函数
 	_fs_image_matrix(_fs_image_matrix&&rv);
 	~_fs_image_matrix();
-	uint32_t get_matrix_size();
-	uint32_t get_row_stride();
-	bool is_NULL();
-	void fill_channels(uint8_t *dst_ptr);
+	uint32_t get_matrix_size()const;
+	uint32_t get_row_stride()const;
+	bool is_NULL()const;
+	void fill_channels(uint8_t *dst_ptr)const;
 #endif // __cplusplus
 }fs_image_matrix, *fs_image_matrix_ptr;
 // fs_image_matrix空对象常量
 static const fs_image_matrix FS_NULL_MATRIX ;
-
-#ifdef __cplusplus
-uint32_t fs_get_row_stride(const fs_image_matrix& matrix);
-uint32_t fs_get_matrix_size(const fs_image_matrix& matrix);
-void fs_fill_channels(const fs_image_matrix& matrix, uint8_t *dst_ptr);
-// 判断matrix是否为空,width,height,channels三个字段为0即为空
-bool fs_matrix_is_NULL(const fs_image_matrix&matrix);
-#endif // __cplusplus
 
 /*
 * 获取矩阵行对齐宽度(像素)
@@ -73,7 +65,7 @@ uint32_t fs_get_row_stride(const fs_image_matrix_ptr matrix);
 uint32_t fs_get_matrix_size(const fs_image_matrix_ptr matrix);
 // 将fs_image_matrix中按像素连续存储的图像数据改为按通道存储
 void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t *dst_ptr);
-// 判断matrix是否为空
+//  判断matrix是否为空,width,height,channels三个字段为0即为空
 int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix);
 // 用指定的参数填充一个fs_image_matrix结构体
 // 返回值0失败 1成功
@@ -85,6 +77,7 @@ fs_image_matrix_ptr fs_new_matrix_s(uint32_t with, uint32_t height, FS_COLOR_SPA
 void fs_free_matrix(fs_image_matrix_ptr matrix);
 // 析构fs_image_matrix对象，释放结构内指针内存,不释放matrix指针
 void fs_destruct_matrix(fs_image_matrix_ptr matrix);
+// 返回颜色对应的通道数
 uint8_t fs_color_depth(FS_COLOR_SPACE color_space);
 #endif // !COMMON_SOURCE_CPP_IMAGE_MATRIX_TYPES_H
 

@@ -340,8 +340,7 @@ fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
 		// 调用复制构造函数
 		return matrix;
 	}
-	auto row_stride=fs_get_row_stride(matrix);
-	auto new_size=row_stride*matrix.height;
+	auto new_size= matrix.get_row_stride()*matrix.height;
     fs_image_matrix gray{matrix.width,matrix.height,1,FSC_GRAYSCALE,matrix.align,nullptr};
     auto dimbuf=depth((J_COLOR_SPACE)matrix.color_space);
     auto src_ptr=matrix.pixels;

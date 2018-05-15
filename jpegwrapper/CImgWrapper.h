@@ -336,7 +336,7 @@ private:
 // fs_image_matrix转换为CImgWrapper
 CImgWrapper<uint8_t> toCImg(const fs_image_matrix&img) {	
 	std::vector<uint8_t> tmp(img.width*img.height*img.channels);
-	fs_fill_channels(img, tmp.data());
+	img.fill_channels(tmp.data());
 	return CImgWrapper<uint8_t>(tmp.data(), img.width, img.height, 1, img.channels, false);
 	}
 // 显示一个fs_image_matrix对象代表的图像

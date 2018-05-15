@@ -103,7 +103,7 @@ opj_image_t* opj_image_create_from_matrix(const fs_image_matrix& matrix, opj_cpa
 	decltype(matrix.height) y;
 	decltype(matrix.width) x;
 	decltype(matrix.channels) ch;
-	auto row_stride=fs_get_row_stride(matrix);
+	auto row_stride = matrix.get_row_stride();
 	// 将fs_image_matrix中按像素连续存储的通道数据依照opj_image_t的格式拆开到不同的comps中
 	for (y = 0; y <matrix.height; ++y) {
 		scanline = const_cast<uint8_t*>(matrix.pixels)+ matrix.channels * row_stride * y;
@@ -142,13 +142,14 @@ fs_image_matrix create_matrix_from_opj_image(opj_image_t* image) {
 	if (!b) {
 		throw opj_exception("fail to fs_make_matrix");
 	}
-	auto row_stride = fs_get_row_stride(matrix);
+	auto row_stride = matrix.get_row_stride();
 
 	uint32_t index = 0;
 	uint8_t* scanline,*pixel;
 	decltype(matrix.height) y;
 	decltype(matrix.width) x;
 	decltype(matrix.channels) ch;
+	// 将opj_image_t在不同的comps按通道存储的数据合并形成按像素连续存储
 	for ( y = 0; y < matrix.height; ++y ) {
 		scanline = matrix.pixels+ matrix.channels * row_stride * y;
 		for ( x = 0; x < matrix.width; ++x ) {
