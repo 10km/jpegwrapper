@@ -64,19 +64,23 @@ bool fs_matrix_is_NULL(const fs_image_matrix&matrix);
 /*
 * 获取矩阵行对齐宽度(像素)
 * */
-uint32_t fs_get_row_stride(const fs_image_matrix* matrix);
+uint32_t fs_get_row_stride(const fs_image_matrix_ptr matrix);
 // 根据图像基本参数计算图像矩阵中图像数据所占内存大小(字节),该结果与pixels是否为NULL无关,
 // 可依据此值为图像分配内存
-uint32_t fs_get_matrix_size(const fs_image_matrix* matrix);
+uint32_t fs_get_matrix_size(const fs_image_matrix_ptr matrix);
 // 将fs_image_matrix中按像素连续存储的图像数据改为按通道存储
-void fs_fill_channels(const fs_image_matrix* matrix, uint8_t *dst_ptr);
+void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t *dst_ptr);
 // 判断matrix是否为空
-int fs_matrix_is_NULL(const fs_image_matrix* matrix);
-void fs_make_matrix(fs_image_matrix_ptr matrix,uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
+int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix);
+// 用指定的参数填充一个fs_image_matrix结构体
+int fs_make_matrix(fs_image_matrix_ptr matrix,uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
 // 创建一个fs_image_matrix结构体
 fs_image_matrix_ptr fs_new_matrix(uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
 fs_image_matrix_ptr fs_new_matrix_s(uint32_t with, uint32_t height, FS_COLOR_SPACE  color_space);
+// 释放fs_image_matrix对象，释放matrix指针
 void fs_free_matrix(fs_image_matrix_ptr matrix);
+// 析构fs_image_matrix对象，释放结构内指针内存,不释放matrix指针
+void fs_destruct_matrix(fs_image_matrix_ptr matrix);
 uint8_t fs_color_depth(FS_COLOR_SPACE color_space);
 #endif // !COMMON_SOURCE_CPP_IMAGE_MATRIX_TYPES_H
 

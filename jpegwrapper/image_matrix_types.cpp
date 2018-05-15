@@ -40,7 +40,7 @@ bool fs_matrix_is_NULL(const fs_image_matrix & matrix)
 		&& 0 == matrix.channels;
 }
 
-uint32_t fs_get_row_stride(const fs_image_matrix * matrix)
+uint32_t fs_get_row_stride(const fs_image_matrix_ptr matrix)
 {
 	if (nullptr == matrix) {
 		return -1;
@@ -48,7 +48,7 @@ uint32_t fs_get_row_stride(const fs_image_matrix * matrix)
 	return fs_get_row_stride(*matrix);
 }
 
-uint32_t fs_get_matrix_size(const fs_image_matrix * matrix)
+uint32_t fs_get_matrix_size(const fs_image_matrix_ptr matrix)
 {
 	if (nullptr == matrix) {
 		return -1;
@@ -56,7 +56,7 @@ uint32_t fs_get_matrix_size(const fs_image_matrix * matrix)
 	return fs_get_matrix_size(*matrix);
 }
 
-void fs_fill_channels(const fs_image_matrix * matrix, uint8_t * dst_ptr)
+void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t * dst_ptr)
 {
 	if (nullptr == matrix) {
 		return ;
@@ -64,7 +64,7 @@ void fs_fill_channels(const fs_image_matrix * matrix, uint8_t * dst_ptr)
 	fs_fill_channels(*matrix, dst_ptr);
 }
 
-int fs_matrix_is_NULL(const fs_image_matrix * matrix)
+int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix)
 {
 	if (nullptr == matrix) {
 		return 1;
@@ -72,25 +72,29 @@ int fs_matrix_is_NULL(const fs_image_matrix * matrix)
 	return fs_matrix_is_NULL(*matrix);
 }
 
-void fs_make_matrix(fs_image_matrix_ptr m_ptr, uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels)
+int fs_make_matrix(fs_image_matrix_ptr matrix, uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels)
 {
-	if (nullptr != m_ptr) {
-		m_ptr->width = with;
-		m_ptr->height = height;
-		m_ptr->channels = channels;
-		m_ptr->color_space = color_space;
-		m_ptr->align = align;
-		uint32_t size = fs_get_matrix_size(m_ptr);
-		m_ptr->shared = nullptr != pixels;
-		m_ptr->pixels = (uint8_t*)(m_ptr->shared ? pixels : malloc(size));
+	if (nullptr != matrix) {
+		matrix->width = with;
+		matrix->height = height;
+		matrix->channels = channels;
+		matrix->color_space = color_space;
+		matrix->align = align;
+		matrix->shared = nullptr != pixels;
+		matrix->pixels = nullptr;
+		uint32_t size = fs_get_matrix_size(matrix);
+		if (size > 0) {			
+			matrix->pixels = (uint8_t*)(matrix->shared ? pixels : malloc(size));
+			return 0;
+		}
 	}
+	return -1;
 }
 
-// 创建一个fs_image_matrix结构体
 fs_image_matrix_ptr fs_new_matrix(uint32_t width, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
-	fs_image_matrix_ptr m_ptr = (fs_image_matrix_ptr)calloc(1, sizeof(fs_image_matrix));
-	fs_make_matrix(m_ptr,width, height, channels, color_space, align, pixels);
-	return m_ptr;
+	fs_image_matrix_ptr matrix = (fs_image_matrix_ptr)calloc(1, sizeof(fs_image_matrix));
+	fs_make_matrix(matrix,width, height, channels, color_space, align, pixels);
+	return matrix;
 }
 
 fs_image_matrix_ptr fs_new_matrix_s(uint32_t with, uint32_t height, FS_COLOR_SPACE color_space) {
@@ -102,11 +106,16 @@ fs_image_matrix_ptr fs_new_matrix_s(uint32_t with, uint32_t height, FS_COLOR_SPA
 }
 
 void fs_free_matrix(fs_image_matrix_ptr matrix) {
+	fs_destruct_matrix(matrix);
+	free(matrix);
+}
+
+void fs_destruct_matrix(fs_image_matrix_ptr matrix)
+{
 	if (nullptr != matrix) {
-		if(! matrix->shared){
+		if (!matrix->shared) {
 			free(matrix->pixels);
 		}
-		free(matrix);
 	}
 }
 
@@ -149,9 +158,7 @@ _fs_image_matrix::_fs_image_matrix() :width(0), height(0), channels(0), color_sp
 }
 
 _fs_image_matrix::~_fs_image_matrix() {
-	if (!shared) {
-		free(pixels);
-	}
+	fs_destruct_matrix(this);
 }
 
 uint32_t _fs_image_matrix::get_matrix_size() {
