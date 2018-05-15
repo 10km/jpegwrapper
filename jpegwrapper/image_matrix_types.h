@@ -73,6 +73,7 @@ void fs_fill_channels(const fs_image_matrix_ptr matrix, uint8_t *dst_ptr);
 // 判断matrix是否为空
 int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix);
 // 用指定的参数填充一个fs_image_matrix结构体
+// 返回值0失败 1成功
 int fs_make_matrix(fs_image_matrix_ptr matrix,uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
 // 创建一个fs_image_matrix结构体
 fs_image_matrix_ptr fs_new_matrix(uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);

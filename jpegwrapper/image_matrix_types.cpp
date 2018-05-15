@@ -75,6 +75,7 @@ int fs_matrix_is_NULL(const fs_image_matrix_ptr matrix)
 int fs_make_matrix(fs_image_matrix_ptr matrix, uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels)
 {
 	if (nullptr != matrix) {
+		fs_destruct_matrix(matrix);
 		matrix->width = with;
 		matrix->height = height;
 		matrix->channels = channels;
@@ -85,10 +86,11 @@ int fs_make_matrix(fs_image_matrix_ptr matrix, uint32_t with, uint32_t height, u
 		uint32_t size = fs_get_matrix_size(matrix);
 		if (size > 0) {			
 			matrix->pixels = (uint8_t*)(matrix->shared ? pixels : malloc(size));
-			return 0;
+			// ÄÚ´æ·ÖÅäÊ§°Ü·µ»Ø
+			return nullptr != matrix->pixels;
 		}
 	}
-	return -1;
+	return 0;
 }
 
 fs_image_matrix_ptr fs_new_matrix(uint32_t width, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
@@ -146,7 +148,7 @@ uint8_t fs_color_depth(FS_COLOR_SPACE color_space) {
 	}
 }
 
-_fs_image_matrix::_fs_image_matrix(uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
+_fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
 	fs_make_matrix(this, width, height, channels, color_space, align, pixels);
 }
 
