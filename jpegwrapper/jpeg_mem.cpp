@@ -76,6 +76,22 @@ void save_jpeg_mem(const fs_image_matrix &matrix,
 	default_compress_instance.custom_output= custom;
 	save_jpeg_mem(default_compress_instance,	finish_output);
 }
+std::string save_jpeg_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
+	std::string out;
+	save_jpeg_mem(matrix,
+		[&](const uint8_t *img, unsigned long size) {
+		out = std::string((char*)img, size);
+	}, quality);
+	return out;
+}
+std::vector<uint8_t> save_jpeg_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
+	std::vector<uint8_t> out;
+	save_jpeg_mem(matrix,
+		[&](const uint8_t *img, unsigned long size) {
+		out = std::vector<uint8_t>(img, img + size);
+	}, quality);
+	return out;
+}
 void save_jpeg_gray_mem(const fs_image_matrix &matrix,
 									const mem_finish_output_fun& finish_output,
 									const unsigned int quality
@@ -84,6 +100,22 @@ void save_jpeg_gray_mem(const fs_image_matrix &matrix,
 			jpeg_set_colorspace((j_compress_ptr)cinfo, JCS_GRAYSCALE);
 		};
 	save_jpeg_mem(matrix,finish_output,quality,custom_output_gray);
+}
+std::string save_jpeg_gray_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
+	std::string out;
+	save_jpeg_gray_mem(matrix,
+		[&](const uint8_t *img, unsigned long size) {
+		out = std::string((char*)img, size);
+	}, quality);
+	return out;
+}
+std::vector<uint8_t> save_jpeg_gray_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
+	std::vector<uint8_t> out;
+	save_jpeg_gray_mem(matrix,
+		[&](const uint8_t *img, unsigned long size) {
+		out = std::vector<uint8_t>(img, img + size);
+	}, quality);
+	return out;
 }
 /* 将jpeg格式的内存数据块jpeg_data解压缩 
  * 图像行数据存储的方式都由decompress_instance定义

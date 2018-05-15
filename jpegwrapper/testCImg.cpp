@@ -60,10 +60,12 @@ int main()
 				[](j_common_ptr cinfo) {
 					//jpeg_set_colorspace((j_compress_ptr)cinfo, JCS_GRAYSCALE);
 				});*/
-		save_jpeg_gray_mem(mat,
-						[&](const uint8_t *img, unsigned long size) {
-							gdface::save_binary_file(output3_jpg_file,img,size);
-						});
+		//save_jpeg_gray_mem(mat,
+		//				[&](const uint8_t *img, unsigned long size) {
+		//					gdface::save_binary_file(output3_jpg_file,img,size);
+		//				});
+		auto out_str = save_jpeg_gray_mem_as_string(mat);
+		gdface::save_binary_file(output3_jpg_file, out_str.c_str(), out_str.size());
 
 		auto output=save_j2k_mem(mat,45, OPJ_CODEC_JP2);
 		gdface::save_binary_file(output4_jpg_file,output.stream_data(),size_t(output.stream_length()));

@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <functional>
 #include <string>
+#include <vector>
 #include <memory>
 #include "jpeglib.h"
 #include "image_matrix_types.h"
@@ -76,20 +77,26 @@ struct jpeg_decompress_default:public jpeg_decompress_interface{
 
 
 void save_jpeg_mem(jpeg_compress_interface& compress_instance,
-									const mem_finish_output_fun& finishe_output,
-									const unsigned int quality = 100
-									);
+					const mem_finish_output_fun& finishe_output,
+					const unsigned int quality = 100
+					);
+
 void save_jpeg_mem(const fs_image_matrix &matrix,
-									const mem_finish_output_fun& finish_output,
-									const unsigned int quality=100,
-									const jpeg_custom_output_fun &custom=jpeg_custom_output_default
-									);
+					const mem_finish_output_fun& finish_output,
+					const unsigned int quality=100,
+					const jpeg_custom_output_fun &custom=jpeg_custom_output_default
+					);
+std::string save_jpeg_mem_as_string(const fs_image_matrix &matrix, const unsigned int quality = 100);
+std::vector<uint8_t> save_jpeg_mem_as_vector(const fs_image_matrix &matrix, const unsigned int quality = 100);
+
 void save_jpeg_gray_mem(const fs_image_matrix &matrix,
-									const mem_finish_output_fun& finish_output,
-									const unsigned int quality=100
-									);
-void load_jpeg_mem(const uint8_t *jpeg_data,size_t size,
-		 jpeg_decompress_interface &decompress_instance);
+						const mem_finish_output_fun& finish_output,
+						const unsigned int quality=100
+						);
+std::string save_jpeg_gray_mem_as_string(const fs_image_matrix &matrix, const unsigned int quality = 100);
+std::vector<uint8_t> save_jpeg_gray_mem_as_vector(const fs_image_matrix &matrix, const unsigned int quality = 100);
+
+void load_jpeg_mem(const uint8_t *jpeg_data,size_t size,jpeg_decompress_interface &decompress_instance);
 fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,
 		const jpeg_custom_output_fun &custom=jpeg_custom_output_default);
 fs_image_matrix load_jpeg_gray_mem(const uint8_t *jpeg_data,size_t size);

@@ -465,6 +465,18 @@ inline uint8_t * opj_stream_mem_output::stream_data() const {
 
 inline OPJ_BOOL opj_stream_mem_output::is_read_stream() const { return 0; }
 
+inline void opj_stream_mem_output::close() {
+	std::vector<uint8_t>::resize(0);
+}
+
+inline std::string opj_stream_mem_output::as_string() {
+	return std::string((char*)stream_data(), stream_length());
+}
+
+inline std::vector<uint8_t> opj_stream_mem_output::as_vector() {
+	return std::vector<uint8_t>(stream_data(), stream_data() + stream_length());
+}
+
 OPJ_BOOL opj_stream_mem_abstract::seek(OPJ_OFF_T p_nb_bytes) const {
 	if (p_nb_bytes >= 0) {
 		cursor = start + p_nb_bytes;

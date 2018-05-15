@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <utility>
 #include <cstring>
+#include <string>
 #include "openjpeg.h"
 #include "image_matrix_types.h"
 
@@ -85,9 +86,11 @@ public:
 	virtual OPJ_SIZE_T write(void * p_buffer, OPJ_SIZE_T p_nb_bytes);
 	virtual uint8_t* stream_data()const;
 	virtual OPJ_BOOL is_read_stream()const;
-	virtual void close() {
-		std::vector<uint8_t>::resize(0);
-	}
+	virtual void close();
+	// 将输出的压缩数据封装为string返回
+	std::string as_string();
+	// 将输出的压缩数据封装为vector返回
+	std::vector<uint8_t> as_vector();
 };
 
 /**
