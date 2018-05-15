@@ -85,6 +85,9 @@ public:
 	virtual OPJ_SIZE_T write(void * p_buffer, OPJ_SIZE_T p_nb_bytes);
 	virtual uint8_t* stream_data()const;
 	virtual OPJ_BOOL is_read_stream()const;
+	virtual void close() {
+		std::vector<uint8_t>::resize(0);
+	}
 };
 
 /**
