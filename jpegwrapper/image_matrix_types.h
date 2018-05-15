@@ -42,7 +42,10 @@ typedef struct _fs_image_matrix {
 	_fs_image_matrix(uint32_t with, uint32_t height, uint8_t channels, FS_COLOR_SPACE  color_space, uint8_t align, void* pixels);
 	_fs_image_matrix(uint32_t width, uint32_t height, FS_COLOR_SPACE  color_space);
 	_fs_image_matrix();
-
+	// 复制构造函数
+	_fs_image_matrix(const _fs_image_matrix&rv);
+	// 移动构造函数
+	_fs_image_matrix(_fs_image_matrix&&rv);
 	~_fs_image_matrix();
 	uint32_t get_matrix_size();
 	uint32_t get_row_stride();

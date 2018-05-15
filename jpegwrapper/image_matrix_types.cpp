@@ -1,3 +1,5 @@
+#include  <cstring>
+#include <stdexcept>
 #include "image_matrix_types.h"
 
 /*
@@ -157,6 +159,23 @@ _fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, FS_COLOR_SPA
 }
 
 _fs_image_matrix::_fs_image_matrix() :width(0), height(0), channels(0), color_space(FSC_UNKNOWN), align(0), shared(0), pixels(nullptr) {
+}
+
+_fs_image_matrix::_fs_image_matrix(const _fs_image_matrix & rv){
+	auto b = fs_make_matrix(this, rv.width, rv.height, rv.channels, rv.color_space, rv.align, nullptr);
+	if (b) {
+		if (nullptr != pixels && nullptr != rv.pixels) {
+			std::memcpy(pixels, rv.pixels, get_matrix_size());
+		}
+	}
+	else {
+		throw std::logic_error("copy constructor function error");
+	}
+}
+
+_fs_image_matrix::_fs_image_matrix(_fs_image_matrix && rv) :width(rv.width), height(rv.height), channels(rv.channels), color_space(rv.color_space), align(rv.align), shared(rv.shared), pixels(rv.pixels) {
+	// 原对象不执行释放动作
+	rv.shared = 1;
 }
 
 _fs_image_matrix::~_fs_image_matrix() {
