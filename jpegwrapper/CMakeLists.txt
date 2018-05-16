@@ -35,7 +35,7 @@ option(AUTO_BUILD_TEST "build test program" OFF)
 set(SOURCE_FILES
 	jpeg_mem.cpp 
 	j2k_mem.cpp
-	image_matrix_types.cpp
+	${DEPENDENT_SOURCE_DIR}/image_matrix_types.cpp
 	)
 file(GLOB _public_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 
@@ -43,7 +43,8 @@ file(GLOB _public_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 list (APPEND _public_headers
     ${INCLUDE_CIMG}/CImg.h
     ${DEPENDENT_SOURCE_DIR}/raii.h
-    ${DEPENDENT_SOURCE_DIR}/assert_macros.h    
+    ${DEPENDENT_SOURCE_DIR}/assert_macros.h
+    ${DEPENDENT_SOURCE_DIR}/image_matrix_types.h
     )
 if(MSVC)
 	list(APPEND _public_headers ${DEPENDENT_SOURCE_DIR}/dirent.h)
