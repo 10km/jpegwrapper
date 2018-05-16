@@ -36,7 +36,7 @@
 
 #include "jpeglib.h"
 #include "jpeg_mem.h"
-#include "j2k_mem.h"
+#include "j2k_mem_advance.h"
 #include "assert_macros.h"
 #ifdef __GNUC__
 // 关闭 using  _Base::_Base; 这行代码产生的警告

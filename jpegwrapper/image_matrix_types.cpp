@@ -127,15 +127,15 @@ uint8_t fs_color_depth(FS_COLOR_SPACE color_space) {
 	}
 }
 
-inline _fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
+_fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, uint8_t channels, FS_COLOR_SPACE color_space, uint8_t align, void * pixels) {
 	fs_make_matrix(this, width, height, channels, color_space, align, pixels);
 }
 
-inline _fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, FS_COLOR_SPACE color_space) {
+_fs_image_matrix::_fs_image_matrix(uint32_t width, uint32_t height, FS_COLOR_SPACE color_space) {
 	fs_make_matrix(this, width, height, fs_color_depth(color_space), color_space, 0, nullptr);
 }
 
-inline _fs_image_matrix::_fs_image_matrix() :width(0), height(0), channels(0), color_space(FSC_UNKNOWN), align(0), shared(0), pixels(nullptr) {
+_fs_image_matrix::_fs_image_matrix() :width(0), height(0), channels(0), color_space(FSC_UNKNOWN), align(0), shared(0), pixels(nullptr) {
 }
 
 _fs_image_matrix::_fs_image_matrix(const _fs_image_matrix & rv){
@@ -150,28 +150,28 @@ _fs_image_matrix::_fs_image_matrix(const _fs_image_matrix & rv){
 	}
 }
 
-inline _fs_image_matrix::_fs_image_matrix(_fs_image_matrix && rv) :width(rv.width), height(rv.height), channels(rv.channels), color_space(rv.color_space), align(rv.align), shared(rv.shared), pixels(rv.pixels) {
+_fs_image_matrix::_fs_image_matrix(_fs_image_matrix && rv) :width(rv.width), height(rv.height), channels(rv.channels), color_space(rv.color_space), align(rv.align), shared(rv.shared), pixels(rv.pixels) {
 	// 原对象不执行释放动作
 	rv.shared = 1;
 }
 
-inline _fs_image_matrix::~_fs_image_matrix() {
+_fs_image_matrix::~_fs_image_matrix() {
 	fs_destruct_matrix(this);
 }
 
-inline uint32_t _fs_image_matrix::get_matrix_size() const{
+uint32_t _fs_image_matrix::get_matrix_size() const{
 	return fs_get_matrix_size((fs_image_matrix_ptr)this);
 }
 
-inline uint32_t _fs_image_matrix::get_row_stride()const {
+uint32_t _fs_image_matrix::get_row_stride()const {
 	return fs_get_row_stride((fs_image_matrix_ptr)this);
 }
 
-inline bool _fs_image_matrix::is_NULL()const{
+bool _fs_image_matrix::is_NULL()const{
 	auto b = fs_matrix_is_NULL((fs_image_matrix_ptr)this);
 	return b ? true : false;
 }
 
-inline void _fs_image_matrix::fill_channels(uint8_t * dst_ptr) const{
+void _fs_image_matrix::fill_channels(uint8_t * dst_ptr) const{
 	fs_fill_channels((fs_image_matrix_ptr)this, dst_ptr);
 }

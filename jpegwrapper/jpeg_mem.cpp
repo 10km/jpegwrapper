@@ -410,7 +410,7 @@ fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
     return gray;
 }
 
-inline jpeg_compress_default::jpeg_compress_default(const fs_image_matrix & matrix) :matrix(matrix), next_line(0) {
+jpeg_compress_default::jpeg_compress_default(const fs_image_matrix & matrix) :matrix(matrix), next_line(0) {
 	row_stride = matrix.get_row_stride();
 }
 
@@ -424,16 +424,16 @@ void jpeg_compress_default::start_output(jpeg_compress_struct & cinfo) {
 	next_line = 0;
 }
 
-inline void jpeg_compress_default::get_pixel_rows(JDIMENSION num_scanlines) {
+void jpeg_compress_default::get_pixel_rows(JDIMENSION num_scanlines) {
 	// buffer指向当前行像素数据的地址
 	buffer[0] = const_cast<JSAMPROW>(matrix.pixels) + (next_line++)*row_stride*matrix.channels;
 }
 
-inline jpeg_decompress_default::jpeg_decompress_default(uint8_t align) :next_line(0), row_stride(0) {
+jpeg_decompress_default::jpeg_decompress_default(uint8_t align) :next_line(0), row_stride(0) {
 	matrix.align = align;
 }
 
-inline jpeg_decompress_default::jpeg_decompress_default() : jpeg_decompress_default(0) {}
+jpeg_decompress_default::jpeg_decompress_default() : jpeg_decompress_default(0) {}
 
 void jpeg_decompress_default::start_output(const jpeg_decompress_struct & dinfo) {
 	// 填充图像基本信息结构
@@ -456,7 +456,7 @@ void jpeg_decompress_default::start_output(const jpeg_decompress_struct & dinfo)
 	buffer[next_line] = matrix.pixels;
 }
 
-inline void jpeg_decompress_default::put_pixel_rows(JDIMENSION num_scanlines) {
+void jpeg_decompress_default::put_pixel_rows(JDIMENSION num_scanlines) {
 	// buffer指向下一行要像素存储地址
 	buffer[0] = matrix.pixels + (++next_line)*row_stride*matrix.channels;
 }

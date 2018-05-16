@@ -5,7 +5,7 @@
  *      Author: guyadong
  */
 #include <memory>
-#include "j2k_mem.h"
+#include "j2k_mem_advance.h"
 #include "raii.h"
 #include "assert_macros.h"
 #define DEFAULT_MEM_STREAM_INIT_SIZE (1024*16)
@@ -48,27 +48,27 @@ opj_stream_t* opj_stream_create_si(opj_stream_interface& stream, OPJ_SIZE_T p_si
 	throw opj_exception("fail to ceate stream:opj_stream_create");
 }
 
-inline opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream) {
+opj_stream_t* opj_stream_create_default_si(opj_stream_interface& stream) {
 	return opj_stream_create_si(stream, OPJ_J2K_STREAM_CHUNK_SIZE);
 }
 
-inline void opj_stream_interface_close(opj_stream_interface* stream_instance) {
+void opj_stream_interface_close(opj_stream_interface* stream_instance) {
 	stream_instance->close();
 }
 
-inline OPJ_BOOL opj_stream_interface_seek(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
+OPJ_BOOL opj_stream_interface_seek(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->seek(p_nb_bytes);
 }
 
-inline OPJ_OFF_T opj_stream_interface_skip(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
+OPJ_OFF_T opj_stream_interface_skip(OPJ_OFF_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->skip(p_nb_bytes);
 }
 
-inline OPJ_SIZE_T opj_stream_interface_write(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
+OPJ_SIZE_T opj_stream_interface_write(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->write(p_buffer, p_nb_bytes);
 }
 
-inline OPJ_SIZE_T opj_stream_interface_read(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
+OPJ_SIZE_T opj_stream_interface_read(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_stream_interface* stream_instance) {
 	return stream_instance->read(p_buffer, p_nb_bytes);
 }
 /* 从fs_image_matrix创建 opj_image_t
@@ -367,20 +367,30 @@ opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format) {
 	parameters.decod_format = format;
 	return load_j2k(src, parameters);
 }
-/* 从jpeg_data和size指定的内存数据中解码指定格式(format)的jpeg2000图像
- * 返回 fs_image_matrix对象,出错则抛出opj_exception异常
- */
-fs_image_matrix load_j2k_mem(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format) {
-	throw_if_null(jpeg_data)
-	throw_if_msg(0 == size, "jpeg_data is empty")
-	opj_stream_mem_input src(jpeg_data, size);
+
+fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, JWP_OPJ_CODEC_FORMAT format) {
+	throw_if_null(j2k_data)
+	throw_if_msg(0 == size, "j2k_data is empty")
+	opj_stream_mem_input src(j2k_data, size);
 	gdface::raii_var<opj_image_t*> raii_image([&]() {
-		return load_j2k(src, format);
+		return load_j2k(src, (OPJ_CODEC_FORMAT)format);
 	}, [](opj_image_t* image) {
 		/* free image data */
 		opj_image_destroy(image);
 	});
 	return create_matrix_from_opj_image(*raii_image);
+}
+
+std::string jwp_save_j2k_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality, JWP_OPJ_CODEC_FORMAT format)
+{
+	auto out = save_j2k_mem(matrix, quality, (OPJ_CODEC_FORMAT)format);
+	return out.as_string();
+}
+
+std::vector<uint8_t> jwp_save_j2k_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality, JWP_OPJ_CODEC_FORMAT format)
+{
+	auto out = save_j2k_mem(matrix, quality, (OPJ_CODEC_FORMAT)format);
+	return out.as_vector();
 }
 
 opj_stream_mem_input::opj_stream_mem_input(const void * data, size_t size) :_data(reinterpret_cast<const uint8_t*>(data)), size(size) {
@@ -403,16 +413,16 @@ OPJ_SIZE_T opj_stream_mem_input::read(void * p_buffer, OPJ_SIZE_T p_nb_bytes) co
 	return (OPJ_SIZE_T)-1;
 }
 
-inline OPJ_SIZE_T opj_stream_mem_input::write(void * p_buffer, OPJ_SIZE_T p_nb_bytes) {
+OPJ_SIZE_T opj_stream_mem_input::write(void * p_buffer, OPJ_SIZE_T p_nb_bytes) {
 	// input stream不能写入
 	return 0;
 }
 
-inline uint8_t * opj_stream_mem_input::stream_data() const {
+uint8_t * opj_stream_mem_input::stream_data() const {
 	return const_cast<uint8_t*>(_data);
 }
 
-inline opj_stream_mem_output::opj_stream_mem_output() :opj_stream_mem_output(DEFAULT_MEM_STREAM_INIT_SIZE) {}
+opj_stream_mem_output::opj_stream_mem_output() :opj_stream_mem_output(DEFAULT_MEM_STREAM_INIT_SIZE) {}
 
 opj_stream_mem_output::opj_stream_mem_output(size_t init_capacity) :base(init_capacity) {
 	start = stream_data();
@@ -421,7 +431,7 @@ opj_stream_mem_output::opj_stream_mem_output(size_t init_capacity) :base(init_ca
 	last = stream_data();
 }
 
-inline OPJ_SIZE_T opj_stream_mem_output::read(void * p_buffer, OPJ_SIZE_T p_nb_bytes) const {
+OPJ_SIZE_T opj_stream_mem_output::read(void * p_buffer, OPJ_SIZE_T p_nb_bytes) const {
 	// output stream不能读取
 	return 0;
 }
@@ -459,21 +469,21 @@ OPJ_SIZE_T opj_stream_mem_output::write(void * p_buffer, OPJ_SIZE_T p_nb_bytes) 
 	return p_nb_bytes;
 }
 
-inline uint8_t * opj_stream_mem_output::stream_data() const {
+uint8_t * opj_stream_mem_output::stream_data() const {
 	return const_cast<uint8_t*>(base::data());
 }
 
-inline OPJ_BOOL opj_stream_mem_output::is_read_stream() const { return 0; }
+OPJ_BOOL opj_stream_mem_output::is_read_stream() const { return 0; }
 
-inline void opj_stream_mem_output::close() {
+void opj_stream_mem_output::close() {
 	std::vector<uint8_t>::resize(0);
 }
 
-inline std::string opj_stream_mem_output::as_string() {
+std::string opj_stream_mem_output::as_string() {
 	return std::string((char*)stream_data(), stream_length());
 }
 
-inline std::vector<uint8_t> opj_stream_mem_output::as_vector() {
+std::vector<uint8_t> opj_stream_mem_output::as_vector() {
 	return std::vector<uint8_t>(stream_data(), stream_data() + stream_length());
 }
 
@@ -498,7 +508,7 @@ OPJ_OFF_T opj_stream_mem_abstract::skip(OPJ_OFF_T p_nb_bytes) const {
 	return (OPJ_OFF_T)-1;
 }
 
-inline OPJ_UINT64 opj_stream_mem_abstract::stream_length() const {
+OPJ_UINT64 opj_stream_mem_abstract::stream_length() const {
 	return (OPJ_UINT64)(last - start);
 }
 
