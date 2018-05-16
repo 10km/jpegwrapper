@@ -480,7 +480,7 @@ void opj_stream_mem_output::close() {
 }
 
 std::string opj_stream_mem_output::as_string() {
-	return std::string((char*)stream_data(), stream_length());
+	return std::string((char*)stream_data(), (size_t)stream_length());
 }
 
 std::vector<uint8_t> opj_stream_mem_output::as_vector() {

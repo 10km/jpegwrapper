@@ -21,8 +21,6 @@ typedef CImgWrapper<uint8_t> CImgWrapperUChar;
 using namespace std;
 int main()
 {
-	FS_JPEG2K_CODEC_FORMAT format = FS_JPEG2K_CODEC_JP2;
-	OPJ_CODEC_FORMAT f = (OPJ_CODEC_FORMAT)format;
 	try {
 		// 定义一个每个颜色 8 位(bit)的 640x400 的彩色图像
 		//CImgWrapper<unsigned char> img(640,400,1,3);
