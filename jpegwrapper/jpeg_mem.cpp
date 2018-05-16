@@ -171,6 +171,11 @@ fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_c
 	return std::move(default_decompress_instance.matrix);
 }
 
+fs_image_matrix jwp_load_jpeg_mem(const void * jpeg_data, size_t size)
+{
+	return load_jpeg_mem((uint8_t *)jpeg_data, size);
+}
+
 fs_image_matrix jwp_load_jpeg_gray_mem(const void *jpeg_data,size_t size) {
 	static auto custom_output_gray=[](j_common_ptr dinfo) {
 			((j_decompress_ptr)dinfo)->out_color_space = JCS_GRAYSCALE;
