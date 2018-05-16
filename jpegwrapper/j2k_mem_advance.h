@@ -14,7 +14,7 @@
 #include <cstring>
 #include <string>
 #include "openjpeg.h"
-#include "j2k_mem.h"
+#include "image_matrix_types.h"
 /* openjpeg编码解码异常类 */
 class opj_exception:public std::logic_error{
 public:

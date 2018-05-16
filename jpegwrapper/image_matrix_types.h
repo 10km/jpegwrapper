@@ -28,6 +28,17 @@ typedef enum {
 	FSC_EXT_ARGB,           /* alpha/red/green/blue */
 	FSC_RGB565              /* 5-bit red/6-bit green/5-bit blue */
 } FS_COLOR_SPACE;
+/**
+* JPEG2000格式定义,与openjpeg.h定义一致
+*/
+typedef enum {
+	JWP_OPJ_CODEC_UNKNOWN = -1,	/**< place-holder */
+	JWP_OPJ_CODEC_J2K = 0,		/**< JPEG-2000 codestream : read/write */
+	JWP_OPJ_CODEC_JPT = 1,		/**< JPT-stream (JPEG 2000, JPIP) : read only */
+	JWP_OPJ_CODEC_JP2 = 2,		/**< JP2 file format : read/write */
+	JWP_OPJ_CODEC_JPP = 3,		/**< JPP-stream (JPEG 2000, JPIP) : to be coded */
+	JWP_OPJ_CODEC_JPX = 4		/**< JPX file format (JPEG 2000 Part-2) : to be coded */
+} JWP_OPJ_CODEC_FORMAT;
 /* 图像矩阵基本参数 */
 typedef struct _fs_image_matrix {
 	uint32_t		width;		// 图像宽度
