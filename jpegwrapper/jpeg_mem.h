@@ -34,7 +34,4 @@ fs_image_matrix jwp_load_jpeg_gray_mem(const void *jpeg_data,size_t size);
 fs_image_matrix jwp_read_jpeg_header_file(const char *const filename);
 fs_image_matrix jwp_read_jpeg_header_file(std::FILE *const file);
 fs_image_matrix jwp_read_jpeg_header_mem(const void *jpeg_data,size_t size);
-// 将图像矩阵转灰度图像矩阵
-fs_image_matrix jwp_to_gray_image_matrix(const fs_image_matrix&matrix);
-
 #endif /* FACEIMAGE_CIMGWRAPPER_JPEG_MEM_H_ */

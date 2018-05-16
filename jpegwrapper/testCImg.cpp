@@ -51,6 +51,9 @@ int main()
 		});
 		cimg_library::image_matrix_display(mat, "test display", true);
 
+		auto gray_mat = mat.to_gray();
+		cimg_library::image_matrix_display(gray_mat, "test to gray matrix", true);
+
 		//auto mat=jwp_load_jpeg_gray_mem(jpeg_data);
 		/*save_jpeg_mem(mat,
 				[&](const uint8_t *img, size_t size) {
