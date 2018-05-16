@@ -14,10 +14,10 @@
 * 返回 fs_image_matrix对象,出错则抛出异常
 * 返回解码后的图像矩阵
 */
-fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, JWP_OPJ_CODEC_FORMAT format);
+fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, FS_JPEG2K_CODEC_FORMAT format);
 // 将图像矩阵保存为format指定的jpeg2000格式，返回压缩后的数据
-std::string jwp_save_j2k_mem_as_string(const fs_image_matrix& matrix, const unsigned int quality = 100, JWP_OPJ_CODEC_FORMAT format = JWP_OPJ_CODEC_JP2);
+std::string jwp_save_j2k_mem_as_string(const fs_image_matrix& matrix, const unsigned int quality = 100, FS_JPEG2K_CODEC_FORMAT format = FS_JPEG2K_CODEC_JP2);
 // 将图像矩阵保存为format指定的jpeg2000格式，返回压缩后的数据
-std::vector<uint8_t> jwp_save_j2k_mem_as_vector(const fs_image_matrix& matrix, const unsigned int quality = 100, JWP_OPJ_CODEC_FORMAT format = JWP_OPJ_CODEC_JP2);
+std::vector<uint8_t> jwp_save_j2k_mem_as_vector(const fs_image_matrix& matrix, const unsigned int quality = 100, FS_JPEG2K_CODEC_FORMAT format = FS_JPEG2K_CODEC_JP2);
 
 #endif /* FACEIMAGE_CIMGWRAPPER_J2K_MEM_H_ */

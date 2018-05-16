@@ -368,7 +368,7 @@ opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format) {
 	return load_j2k(src, parameters);
 }
 
-fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, JWP_OPJ_CODEC_FORMAT format) {
+fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, FS_JPEG2K_CODEC_FORMAT format) {
 	throw_if_null(j2k_data)
 	throw_if_msg(0 == size, "j2k_data is empty")
 	opj_stream_mem_input src(j2k_data, size);
@@ -381,13 +381,13 @@ fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, JWP_OPJ_C
 	return create_matrix_from_opj_image(*raii_image);
 }
 
-std::string jwp_save_j2k_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality, JWP_OPJ_CODEC_FORMAT format)
+std::string jwp_save_j2k_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality, FS_JPEG2K_CODEC_FORMAT format)
 {
 	auto out = save_j2k_mem(matrix, quality, (OPJ_CODEC_FORMAT)format);
 	return out.as_string();
 }
 
-std::vector<uint8_t> jwp_save_j2k_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality, JWP_OPJ_CODEC_FORMAT format)
+std::vector<uint8_t> jwp_save_j2k_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality, FS_JPEG2K_CODEC_FORMAT format)
 {
 	auto out = save_j2k_mem(matrix, quality, (OPJ_CODEC_FORMAT)format);
 	return out.as_vector();

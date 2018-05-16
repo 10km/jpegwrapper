@@ -94,10 +94,10 @@ int main()
 		});
 
 		auto j2k_data=gdface::load_binary_file(output4_jpg_file);
-		image_jpg.load_mem_j2k(j2k_data.data(), j2k_data.size(),OPJ_CODEC_JP2);
+		image_jpg.load_mem_j2k(j2k_data.data(), j2k_data.size(), FS_JPEG2K_CODEC_JP2);
 		image_jpg.draw_text(100,100,"jpeg2000 test",purple);
 		image_jpg.display(output4_jpg_file);
-		auto j2k_mat = jwp_load_j2k_mem(j2k_data.data(), j2k_data.size(), JWP_OPJ_CODEC_JP2);
+		auto j2k_mat = jwp_load_j2k_mem(j2k_data.data(), j2k_data.size(), FS_JPEG2K_CODEC_JP2);
 		cimg_library::image_matrix_display(j2k_mat, "test jwp_load_j2k_mem display", true);
 
 	}catch (exception &e){

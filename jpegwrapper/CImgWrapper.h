@@ -210,12 +210,12 @@ public:
 	const CImgWrapper<T>& load_mem_jpeg_gray(std::vector<uint8_t> jpeg_data){
 		return load_mem_jpeg_gray(jpeg_data.data(),jpeg_data.size());
 	}
-	const CImgWrapper<T>& load_mem_j2k(const uint8_t* jpeg_data, size_t size, OPJ_CODEC_FORMAT format){
+	const CImgWrapper<T>& load_mem_j2k(const uint8_t* jpeg_data, size_t size, FS_JPEG2K_CODEC_FORMAT format){
 		throw_if_null(jpeg_data)
 		throw_if_msg(0 == size, "jpeg_data is empty")
 		opj_stream_mem_input src(jpeg_data, size);
 		gdface::raii_var<opj_image_t*> raii_image([&]() {
-			return load_j2k(src, format);
+			return load_j2k(src, (OPJ_CODEC_FORMAT)format);
 		}, [](opj_image_t* image) {
 			/* free image data */
 			opj_image_destroy(image);
@@ -241,12 +241,12 @@ public:
 
 	const opj_stream_mem_output save_mem_j2k(
 					const unsigned int quality = 100,
-					OPJ_CODEC_FORMAT format=OPJ_CODEC_JP2
+					FS_JPEG2K_CODEC_FORMAT format= FS_JPEG2K_CODEC_JP2
 					) const {
 		auto parameters = std::make_shared<opj_cparameters_t>();
 		/* set encoding parameters to default values */
 		opj_set_default_encoder_parameters(parameters.get());
-		parameters->cod_format=format;
+		parameters->cod_format=(OPJ_CODEC_FORMAT)format;
 		parameters->tcp_numlayers=1;
 		parameters->tcp_distoratio[0]=(float)(quality>100?100:quality);
 		parameters->cp_fixed_quality=1;
@@ -263,9 +263,9 @@ public:
 	const CImgWrapper<T>& save_mem_j2k(
 					const mem_finish_output_fun& finishe_output,
 					const unsigned int quality = 100,
-					OPJ_CODEC_FORMAT format=OPJ_CODEC_J2K
+					FS_JPEG2K_CODEC_FORMAT format = FS_JPEG2K_CODEC_JP2
 					) const {
-		auto out=save_mem_j2k(quality,format);
+		auto out=save_mem_j2k(quality, (OPJ_CODEC_FORMAT)format);
 		finishe_output(out.stream_data(),out.stream_length());
 		return *this;
 	}
