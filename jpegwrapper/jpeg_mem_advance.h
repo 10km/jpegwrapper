@@ -16,7 +16,7 @@
 #include "jpeg_mem.h"
 
 /* 处理压缩解压缩后内存数据的回调函数 */
-using mem_finish_output_fun=std::function<void(const uint8_t*,unsigned long)>;
+using mem_finish_output_fun=std::function<void(const uint8_t*,size_t)>;
 /* 定制压缩解压缩参数 */
 using jpeg_custom_output_fun=std::function<void(j_common_ptr)>;
 extern jpeg_custom_output_fun jpeg_custom_output_default;

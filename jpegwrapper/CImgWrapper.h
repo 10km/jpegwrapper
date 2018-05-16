@@ -265,7 +265,7 @@ public:
 					const unsigned int quality = 100,
 					FS_JPEG2K_CODEC_FORMAT format = FS_JPEG2K_CODEC_JP2
 					) const {
-		auto out=save_mem_j2k(quality, (OPJ_CODEC_FORMAT)format);
+		auto out=save_mem_j2k(quality, format);
 		finishe_output(out.stream_data(),out.stream_length());
 		return *this;
 	}
