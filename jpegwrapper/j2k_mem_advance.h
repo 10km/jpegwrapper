@@ -14,20 +14,7 @@
 #include <cstring>
 #include <string>
 #include "openjpeg.h"
-#include "image_matrix_types.h"
-/* openjpeg编码解码异常类 */
-class opj_exception:public std::logic_error{
-public:
-	// 继承基类构造函数
-	using std::logic_error::logic_error;
-};
-
-/* stream异常类 */
-class opj_stream_exception:public std::logic_error{
-public:
-	// 继承基类构造函数
-	using std::logic_error::logic_error;
-};
+#include "j2k_mem.h"
 
 /* 流(stream)接口 */
 struct opj_stream_interface{

@@ -11,8 +11,8 @@
 #include <iostream>
 #include "file_utilits.h"
 #include "CImgWrapper.h"
-#include "jpeg_mem.h"
-#include "j2k_mem.h"
+#include "jpeg_mem_advance.h"
+#include "j2k_mem_advance.h"
 using namespace cimg_library;
 //using namespace gdface;
 using namespace std;
@@ -32,9 +32,9 @@ int main()
 		//CImgWrapper<unsigned char> image_jpg(input_jpg_file);
 		CImgWrapper<unsigned char> image_jpg;
 		std::vector<uint8_t> jpeg_data=gdface::load_binary_file(input_jpg_file);
-		auto matrix=read_jpeg_header_mem(jpeg_data.data(), jpeg_data.size());
+		auto matrix=jwp_read_jpeg_header_mem(jpeg_data.data(), jpeg_data.size());
 
-		//auto matrix=read_jpeg_header_file(input_jpg_file);
+		//auto matrix=jwp_read_jpeg_header_file(input_jpg_file);
 		cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<endl;
 		image_jpg.load_mem_jpeg(
 				jpeg_data,
@@ -48,7 +48,7 @@ int main()
 		});
 		cimg_library::image_matrix_display(mat, "test display", true);
 
-		//auto mat=load_jpeg_gray_mem(jpeg_data);
+		//auto mat=jwp_load_jpeg_gray_mem(jpeg_data);
 		/*save_jpeg_mem(mat,
 				[&](const uint8_t *img, unsigned long size) {
 					std::ofstream ofs;
@@ -64,7 +64,7 @@ int main()
 		//				[&](const uint8_t *img, unsigned long size) {
 		//					gdface::save_binary_file(output3_jpg_file,img,size);
 		//				});
-		auto out_str = save_jpeg_gray_mem_as_string(mat);
+		auto out_str = jwp_save_jpeg_gray_mem_as_string(mat);
 		gdface::save_binary_file(output3_jpg_file, out_str.c_str(), out_str.size());
 
 		auto output=save_j2k_mem(mat,45, OPJ_CODEC_JP2);

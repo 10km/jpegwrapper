@@ -35,7 +35,7 @@
 
 
 #include "jpeglib.h"
-#include "jpeg_mem.h"
+#include "jpeg_mem_advance.h"
 #include "j2k_mem_advance.h"
 #include "assert_macros.h"
 #ifdef __GNUC__

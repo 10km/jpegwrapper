@@ -9,7 +9,8 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
-#include "jpeg_mem.h"
+#include "assert_macros.h"
+#include "jpeg_mem_advance.h"
 #include "raii.h"
 jpeg_custom_output_fun jpeg_custom_output_default=[](j_common_ptr){};
 /* 自定义jpeg图像压缩/解压缩过程中错误退出函数 */
@@ -76,7 +77,7 @@ void save_jpeg_mem(const fs_image_matrix &matrix,
 	default_compress_instance.custom_output= custom;
 	save_jpeg_mem(default_compress_instance,	finish_output);
 }
-std::string save_jpeg_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
+std::string jwp_save_jpeg_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
 	std::string out;
 	save_jpeg_mem(matrix,
 		[&](const uint8_t *img, unsigned long size) {
@@ -84,7 +85,7 @@ std::string save_jpeg_mem_as_string(const fs_image_matrix & matrix, const unsign
 	}, quality);
 	return out;
 }
-std::vector<uint8_t> save_jpeg_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
+std::vector<uint8_t> jwp_save_jpeg_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
 	std::vector<uint8_t> out;
 	save_jpeg_mem(matrix,
 		[&](const uint8_t *img, unsigned long size) {
@@ -101,7 +102,7 @@ void save_jpeg_gray_mem(const fs_image_matrix &matrix,
 		};
 	save_jpeg_mem(matrix,finish_output,quality,custom_output_gray);
 }
-std::string save_jpeg_gray_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
+std::string jwp_save_jpeg_gray_mem_as_string(const fs_image_matrix & matrix, const unsigned int quality) {
 	std::string out;
 	save_jpeg_gray_mem(matrix,
 		[&](const uint8_t *img, unsigned long size) {
@@ -109,7 +110,7 @@ std::string save_jpeg_gray_mem_as_string(const fs_image_matrix & matrix, const u
 	}, quality);
 	return out;
 }
-std::vector<uint8_t> save_jpeg_gray_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
+std::vector<uint8_t> jwp_save_jpeg_gray_mem_as_vector(const fs_image_matrix & matrix, const unsigned int quality) {
 	std::vector<uint8_t> out;
 	save_jpeg_gray_mem(matrix,
 		[&](const uint8_t *img, unsigned long size) {
@@ -170,11 +171,11 @@ fs_image_matrix load_jpeg_mem(const uint8_t *jpeg_data,size_t size,	const jpeg_c
 	return std::move(default_decompress_instance.matrix);
 }
 
-fs_image_matrix load_jpeg_gray_mem(const uint8_t *jpeg_data,size_t size) {
+fs_image_matrix jwp_load_jpeg_gray_mem(const void *jpeg_data,size_t size) {
 	static auto custom_output_gray=[](j_common_ptr dinfo) {
 			((j_decompress_ptr)dinfo)->out_color_space = JCS_GRAYSCALE;
 		};
-	return load_jpeg_mem(jpeg_data,size,custom_output_gray);
+	return load_jpeg_mem((uint8_t *)jpeg_data,size,custom_output_gray);
 }
 /* 图像数据(输出/输入)接口 */
 struct jpeg_io_interface{
@@ -253,7 +254,8 @@ fs_image_matrix read_jpeg_header(const jpeg_io_interface &src) {
 	// 初始化压缩对象
 	jpeg_create_decompress(&dinfo);
 	src.open((j_common_ptr)&dinfo);
-	(void) jpeg_read_header(&dinfo, true);
+	auto retcode = jpeg_read_header(&dinfo, true);
+	throw_except_if_msg(jpeg_mem_exception, JPEG_HEADER_OK != retcode, "invalid jpeg header")
 	fs_image_matrix matrix;
 	// 填充图像基本信息结构
 	matrix.width=dinfo.image_width;
@@ -263,14 +265,14 @@ fs_image_matrix read_jpeg_header(const jpeg_io_interface &src) {
 	//std::cout<<matrix.width<<"x"<<matrix.height<<"x"<<(uint32_t)matrix.channels<<" color="<<matrix.color_space<<std::endl;
 	return std::move(matrix);
 }
-fs_image_matrix read_jpeg_header_file(const char *const filename) {
+fs_image_matrix jwp_read_jpeg_header_file(const char *const filename) {
 	return read_jpeg_header(jpeg_io_file<false>(filename));
 }
-fs_image_matrix read_jpeg_header_file(std::FILE *const file) {
+fs_image_matrix jwp_read_jpeg_header_file(std::FILE *const file) {
 	return read_jpeg_header(jpeg_io_file<false>(file));
 }
-fs_image_matrix read_jpeg_header_mem(const uint8_t *jpeg_data,size_t size) {
-	return read_jpeg_header(jpeg_io_mem<false>(jpeg_data,size));
+fs_image_matrix jwp_read_jpeg_header_mem(const void *jpeg_data,size_t size) {
+	return read_jpeg_header(jpeg_io_mem<false>((uint8_t*)jpeg_data,size));
 }
 
 uint8_t depth(J_COLOR_SPACE color_space){
@@ -354,7 +356,7 @@ void convert(const uint8_t*src_ptr, uint8_t*dst_ptr,size_t size,size_t src_step)
 /*
  * 将彩色图像转为灰度图像
 */
-fs_image_matrix to_gray_image_matrix(const fs_image_matrix&matrix){
+fs_image_matrix jwp_to_gray_image_matrix(const fs_image_matrix&matrix){
 	if (FSC_GRAYSCALE == matrix.color_space){ 
 		// 调用复制构造函数
 		return matrix;

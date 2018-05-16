@@ -368,10 +368,10 @@ opj_image_t* load_j2k(opj_stream_interface& src, OPJ_CODEC_FORMAT format) {
 	return load_j2k(src, parameters);
 }
 
-fs_image_matrix jwp_load_j2k_mem(const uint8_t* j2k_data, size_t size, FS_JPEG2K_CODEC_FORMAT format) {
+fs_image_matrix jwp_load_j2k_mem(const void* j2k_data, size_t size, FS_JPEG2K_CODEC_FORMAT format) {
 	throw_if_null(j2k_data)
 	throw_if_msg(0 == size, "j2k_data is empty")
-	opj_stream_mem_input src(j2k_data, size);
+	opj_stream_mem_input src((uint8_t*)j2k_data, size);
 	gdface::raii_var<opj_image_t*> raii_image([&]() {
 		return load_j2k(src, (OPJ_CODEC_FORMAT)format);
 	}, [](opj_image_t* image) {
