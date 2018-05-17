@@ -42,13 +42,9 @@ file(GLOB _public_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 # 用于外部调用的公共头文件
 list (APPEND _public_headers
     ${INCLUDE_CIMG}/CImg.h
-    ${DEPENDENT_SOURCE_DIR}/raii.h
     ${DEPENDENT_SOURCE_DIR}/assert_macros.h
     ${DEPENDENT_SOURCE_DIR}/image_matrix_types.h
     )
-if(MSVC)
-	list(APPEND _public_headers ${DEPENDENT_SOURCE_DIR}/dirent.h)
-endif()
 set(_target_static jpegwrapper-static)
 add_library( ${_target_static} STATIC ${SOURCE_FILES})
 if(NOT OPENJPEG_BUILD_SHARED_LIBS)
