@@ -1,12 +1,12 @@
 #!/bin/bash
 GXX_PATH=
-if [ `/usr/bin/g++ -dumpversion` != "5.2.0" ]
+if [ `/usr/bin/g++ -dumpversion` \< "4.8.0" ]
 then
-	if [ `/usr/local/bin/g++ -dumpversion` = "5.2.0" ]
+	if [ `/usr/local/bin/g++ -dumpversion` \> "4.8.0" ]
 	then
 		GXX_PATH="-DCMAKE_CXX_COMPILER:FILEPATH=/usr/local/bin/g++ -DCMAKE_C_COMPILER:FILEPATH=/usr/local/bin/gcc"
 	else
-		echo "g++ compiler required version 5.2.0"
+		echo "g++ compiler required version 4.8.0"
 		exit -1
 	fi
 fi
