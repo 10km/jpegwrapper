@@ -36,7 +36,7 @@ cmake -G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE=$build_type \
 	-DCMAKE_DEBUG_POSTFIX=_d \
 	-DCMAKE_C_FLAGS=-m32 \
-	-DWITH_SIMD=OFF \
+	-DWITH_SIMD=ON \
 	-DCMAKE_INSTALL_PREFIX=$sh_folder/libjpeg-turbo-linux-x86 \
 	..
 make install -j8
@@ -54,7 +54,7 @@ cmake -G "Unix Makefiles" \
 	-DCMAKE_BUILD_TYPE=$build_type \
 	-DCMAKE_DEBUG_POSTFIX=_d \
 	-DCMAKE_C_FLAGS=-m64 \
-	-DWITH_SIMD=OFF \
+	-DWITH_SIMD=ON \
 	-DCMAKE_INSTALL_PREFIX=$sh_folder/libjpeg-turbo-linux-x86_64 \
 	..
 make install -j8
