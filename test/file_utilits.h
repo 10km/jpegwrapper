@@ -13,10 +13,11 @@
 #include <vector>
 #include <cstdio>
 #include <algorithm>
-#include <dirent.h>
 #ifdef _WIN32
+#include "dirent.h"
 #include<direct.h>
 #else
+#include <dirent.h>
 #include <unistd.h>
 #endif
 #include "raii.h"
