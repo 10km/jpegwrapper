@@ -2,6 +2,11 @@
 
 基于libjpeg-turbo,openjpeg 实现对jpeg,jpeg2000(j2k)图像的内存编解码(C++11封装)。
 
+**NOTE:**
+
+如果你只是想实现JPEG图像的内存解码，其实不需要这么复杂的，[CImg](http://cimg.eu/) 就可以解决你的问题,参见我的博客:
+
+[《CImg:插件(plugin)使用说明塈实现JPEG图像内存编码/解码》](https://blog.csdn.net/10km/article/details/82925459)
 
 ## 代码下载
 
@@ -174,3 +179,6 @@ cmake脚本中引用 jpegwrapper 库的完整示例参见 [test/CMakeLists.txt](
  
 生成unix Makefile过程参见：
 [test/make_unix_makefile.sh](test/make_unix_makefile.sh)
+
+
+
